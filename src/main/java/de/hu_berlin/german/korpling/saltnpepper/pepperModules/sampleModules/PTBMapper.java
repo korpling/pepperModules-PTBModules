@@ -28,14 +28,15 @@ public class PTBMapper extends PepperMapperImpl {
 
 	
 	//manage settings
-	private static final String strNamespace = "PTB"; //or overwrite me
-	private static final String strPosName = "pos"; //or overwrite me
-	private static final String strCatName = "cat"; //or overwrite me
-	private static final String strEdgeType = "edge"; //or overwrite me
-	private static final String strEdgeAnnoSeparator = "-"; //or overwrite me
-	private static final String strEdgeAnnoNameSpace = "PTB"; //or overwrite me
-	private static final String strEdgeAnnoName = "func"; //or overwrite me
-	private static final Boolean bolEdgeAnnos = true; //or overwrite me
+	private String strNamespace ; //or overwrite me
+	private String strPosName ; //or overwrite me
+	private String strCatName ; //or overwrite me
+	private String strEdgeType; //or overwrite me
+	private String strEdgeAnnoSeparator; //or overwrite me
+	private String strEdgeAnnoNameSpace; //or overwrite me
+	private String strEdgeAnnoName; //or overwrite me
+	private Boolean bolEdgeAnnos; //or overwrite me
+	
 	
 	//Declare Salt Objects
 	private StringBuilder stbText = new StringBuilder();
@@ -71,6 +72,8 @@ public class PTBMapper extends PepperMapperImpl {
 	@Override
 	public MAPPING_RESULT mapSDocument() {
 
+		getSettings(); //initialize values for special parameters (configurable annotation names etc.)
+		
 		if (getSDocument().getSDocumentGraph()== null)
 			{getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());}
 		
@@ -253,14 +256,29 @@ public class PTBMapper extends PepperMapperImpl {
 
 	public static void main(String[] args) {
 		//System.out.println("hallo");
+		PTBImporterProperties myProps = new PTBImporterProperties();
+		
 		PTBMapper myMapper = new PTBMapper(); 
 		myMapper.setSDocument(SaltFactory.eINSTANCE.createSDocument());
 		myMapper.setResourceURI(URI.createFileURI("D:/ptb_in.txt"));
+		myMapper.setProperties(myProps);
 		MAPPING_RESULT myMappingResult = myMapper.mapSDocument();
 		Salt2DOT salt2dot= new Salt2DOT();
 		salt2dot.salt2Dot(myMapper.getSDocument().getSDocumentGraph(), URI.createFileURI("D:/dot_out.dot"));
 		System.out.println("done");
 		
+	}
+	
+	private void getSettings(){
+		
+		strNamespace = ((PTBImporterProperties) this.getProperties()).getNodeNamespace(); 
+		strPosName = ((PTBImporterProperties) this.getProperties()).getPosName();
+		strCatName = ((PTBImporterProperties) this.getProperties()).getCatName();
+		strEdgeType = ((PTBImporterProperties) this.getProperties()).getEdgeType();
+		strEdgeAnnoSeparator = ((PTBImporterProperties) this.getProperties()).getEdgeAnnoSeparator();
+		strEdgeAnnoNameSpace = ((PTBImporterProperties) this.getProperties()).getEdgeAnnoNamespace();
+		strEdgeAnnoName = ((PTBImporterProperties) this.getProperties()).getEdgeAnnoName();
+		bolEdgeAnnos = ((PTBImporterProperties) this.getProperties()).getImportEdgeAnnos();
 	}
 	
 }

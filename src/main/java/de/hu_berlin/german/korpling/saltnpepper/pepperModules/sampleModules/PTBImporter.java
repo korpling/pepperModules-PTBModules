@@ -65,13 +65,9 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter
 	public PTBImporter()
 	{
 		super();
-		//TODO change the name of the module, for example use the format name and the ending Importer (FORMATImporter)
 		this.name= "PTBImporter";
-		//TODO change the version of your module, we recommend to synchronize this value with the maven version in your pom.xml
 		this.setVersion("0.0.1");
-		//TODO change "sample" with format name and 1.0 with format version to support
 		this.addSupportedFormat("PTB", "1.0", null);
-		//TODO change the endings in endings of files you want to import, see also predefined endings beginning with 'ENDING_' 
 		this.getSDocumentEndings().add("ptb");
 		this.getSDocumentEndings().add("txt");
 	}
@@ -92,8 +88,6 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter
 	public PepperMapper createPepperMapper(SElementId sElementId)
 	{
 		PepperMapper ptbmap = new PTBMapper();
-		
-		//TODO create an object of a class derived from PepperMapper and return it, if necessary, make some more initializations 
 		return(ptbmap);
 	}
 	
@@ -131,19 +125,4 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter
 		return(super.isReadyToStart());
 	}
 	
-	/**
-	 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong>
-	 * 
-	 * This method is called by the pepper framework to import the corpus-structure. In case that you are creating an importer, 
-	 * check if the default behavior of the corpus-structure import mechanism fits for your need. If the default behaviour does not 
-	 * fullfill your needs, or you don't know the default, we recommend, to take a look into the
-	 * 'Developer's Guide for Pepper modules', you will find on <a href="https://korpling.german.hu-berlin.de/saltnpepper/">https://korpling.german.hu-berlin.de/saltnpepper/</a>. 
-	 * @param corpusGraph the CorpusGraph object, which has to be fullfilled.
-	 */
-	@Override
-	public void importCorpusStructure(SCorpusGraph sCorpusGraph) throws PepperModuleException
-	{
-		//TODO remove the following line of code for adoption
-		super.importCorpusStructure(sCorpusGraph);
-	}
 }
