@@ -40,7 +40,7 @@
   </parent>
   <description>This project provides a module to import the Penn Treebank (PTB) bracket format.</description>
   <!-- TODO /4/ change the project homepage to the url of your project. -->
-  <url>https://korpling.german.hu-berlin.de/p/projects/peppermodules-samplemodules</url>
+  <url>https://korpling.german.hu-berlin.de/p/projects/peppermodules-ptbmodules</url>
   <!-- TODO /5/ change the issue tracker to the one you are using, in case of you do not use any one, remove this entry. -->
   <!-- TODO /6/ change the continuous integration management system to the one you are using, in case of you do not use any one, remove this entry. -->
   <ciManagement>
@@ -64,7 +64,7 @@
         <configuration>
           <tagBase>
           <!-- TODO /11/ change the connection to the tags folder of your scm, what you can see here is the subversion connection for the pepperModules-SampleModules project -->
-           https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/SampleModules/tags/
+           https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/tags/
           </tagBase>
           <releaseProfiles>release</releaseProfiles>
           <goals>package assembly:single deploy</goals>

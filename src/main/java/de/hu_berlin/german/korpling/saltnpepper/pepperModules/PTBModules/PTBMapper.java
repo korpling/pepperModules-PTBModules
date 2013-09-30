@@ -1,4 +1,5 @@
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.sampleModules;
+package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
+
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.MAPPING_RESULT;
@@ -10,6 +11,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 
 import java.io.BufferedReader;
@@ -18,6 +20,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.management.InstanceAlreadyExistsException;
 
@@ -28,26 +32,29 @@ public class PTBMapper extends PepperMapperImpl {
 
 	
 	//manage settings
-	private String strNamespace ; //or overwrite me
-	private String strPosName ; //or overwrite me
-	private String strCatName ; //or overwrite me
-	private String strEdgeType; //or overwrite me
-	private String strEdgeAnnoSeparator; //or overwrite me
-	private String strEdgeAnnoNameSpace; //or overwrite me
-	private String strEdgeAnnoName; //or overwrite me
-	private Boolean bolEdgeAnnos; //or overwrite me
+	private String strNamespace ; 
+	private String strPosName ;
+	private String strCatName ; 
+	private String strEdgeType; 
+	private String strEdgeAnnoSeparator; 
+	private String strEdgeAnnoNameSpace; 
+	private String strEdgeAnnoName; 
+	private Boolean bolEdgeAnnos; 
+	private Boolean bolHandleSlashTokens; 
 	
 	
 	//Declare Salt Objects
 	private StringBuilder stbText = new StringBuilder();
 	private STextualDS txtText = null;
+	private SLayer lyrPTB = SaltFactory.eINSTANCE.createSLayer();
 	
 	//Other globals
 	private Stack<Vector<SNode>> stNodeVectors = new Stack<Vector<SNode>>();
 	private String strPos = ""; //holds the current pos tag
 	private String strTok = ""; //holds the current token
 	private String strNode = ""; //holds the current node (i.e. cat annotation value)
-	private String strSplitCompoundAnno[];
+	private String strSplitCompoundAnno[] = new String[2];
+	private String strTempAnno;
 	private SAnnotation anoTemp = null;
 	private int intTokStartChar;
 	private int intTokEndChar;
@@ -72,7 +79,11 @@ public class PTBMapper extends PepperMapperImpl {
 	@Override
 	public MAPPING_RESULT mapSDocument() {
 
+		PTBImporterProperties myProps = new PTBImporterProperties();
+		this.setProperties(myProps);
 		getSettings(); //initialize values for special parameters (configurable annotation names etc.)
+		lyrPTB.setSName(strNamespace);
+
 		
 		if (getSDocument().getSDocumentGraph()== null)
 			{getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());}
@@ -84,21 +95,59 @@ public class PTBMapper extends PepperMapperImpl {
 	    try{
 	    	
 	    	br = new BufferedReader(new FileReader(getResourceURI().toFileString()));
-		
-	        String line = br.readLine();
 
-	        while (line != null) {
+	        String line;
+	        String strValidate = br.readLine();
+
+	        
+        	while (!(strValidate.trim().startsWith("("))) //every line should start with a '(', otherwise ignore it
+        	{
+        		strValidate = br.readLine();
+        	}
+	        line = strValidate.trim();
+        	
+	        while (strValidate != null) {
 	            if (CountInString(line, "(") == CountInString(line, ")"))
 	            {
 		            //sentence is complete
+            		//line = line.replaceAll("([^ ])\\(", "'$1' (");
+	            	if (bolHandleSlashTokens){
+	            		line = line.replaceAll(" ([^ /]+)/([^ ]+) "," ('$1' '$2') ");
+	            	}
+	            	
 		            mapSentence(line);
-		            line = br.readLine();
+		            strValidate = br.readLine();
+		            if (strValidate == null) {break;}
+		        	while (!(strValidate.trim().startsWith("("))) //every line should start with a '(', otherwise ignore it
+		        	{
+		        		strValidate = br.readLine();
+			            if (strValidate == null) {break;}
+		        	}
+		        	if (!(strValidate == null)){
+		            line = strValidate.trim();
+		        	}
 	            }
 	            else
 	            {
 	            	//sentence not yet complete, keep adding lines until equal amount of "(" and ")"
-	            	line += br.readLine();
-	            }	            
+		            strValidate = br.readLine();
+		            if (strValidate == null) {
+		            	break;
+		            	//document may have ended in an unfinished sentence!
+		            }
+		        	while (!(strValidate.trim().startsWith("("))) //every line should start with a '(', otherwise ignore it
+		        	{
+	        			strValidate = br.readLine();
+		            	if (strValidate == null) {
+		            		break;
+		            	}
+		        	}
+	            	
+		        	if (!(strValidate == null))
+		        	{
+		            	line += " " + strValidate.trim();		        		
+		        	}
+	            }
 	        }
 	    } 
 	    catch(FileNotFoundException e)
@@ -171,6 +220,7 @@ public class PTBMapper extends PepperMapperImpl {
 					
 					//create new SNode
 					nodCurrentNode = SaltFactory.eINSTANCE.createSStructure();
+					nodCurrentNode.getSLayers().add(lyrPTB);
 					getSDocument().getSDocumentGraph().addSNode(nodCurrentNode);
 					
 					//annotate the new SNode with cat=strNode
@@ -197,42 +247,50 @@ public class PTBMapper extends PepperMapperImpl {
 				intCountClosingBrackets = CountInString(strSingleNode,")");
 				for (int i=0; i < intCountClosingBrackets; i++){
 
-					vecNodeList = stNodeVectors.pop();
-					if (!stNodeVectors.isEmpty()) //if root has been reached, do nothing
+					if (!(stNodeVectors.isEmpty()))
 					{
-					nodCurrentNode = stNodeVectors.peek().lastElement();
-										
-						for (SNode nodChild : vecNodeList)
+						vecNodeList = stNodeVectors.pop();
+						if (!stNodeVectors.isEmpty()) //if root has been reached, do nothing
 						{
-							if (!(nodCurrentNode instanceof SStructure))
+						nodCurrentNode = stNodeVectors.peek().lastElement();
+											
+							for (SNode nodChild : vecNodeList)
 							{
-								//do not attempt to create a dominance edge if the parent is a token
-							}
-							else
-							{
-							SDominanceRelation domCurrentDom = SaltFactory.eINSTANCE.createSDominanceRelation();
-							domCurrentDom.setSSource((SStructure) nodCurrentNode);
-							domCurrentDom.setSTarget(nodChild);
-							domCurrentDom.addSType(strEdgeType);
-							
-							getSDocument().getSDocumentGraph().addSRelation(domCurrentDom);
-
-							//add edge annotations if desired and present
-							if (bolEdgeAnnos)
-							{
-
-								anoTemp = nodChild.getSAnnotations().get(0);
-							
-								if (anoTemp.getSValueSTEXT().toString().contains(strEdgeAnnoSeparator))
+								if (!(nodCurrentNode instanceof SStructure))
 								{
-									strSplitCompoundAnno = anoTemp.getSValueSTEXT().split(strEdgeAnnoSeparator);
-									anoTemp.setSValue(strSplitCompoundAnno[0]);
-									domCurrentDom.createSAnnotation(strEdgeAnnoNameSpace, strEdgeAnnoName, strSplitCompoundAnno[1]);
+									//do not attempt to create a dominance edge if the parent is a token
 								}
+								else
+								{
+								SDominanceRelation domCurrentDom = SaltFactory.eINSTANCE.createSDominanceRelation();
+								domCurrentDom.setSSource((SStructure) nodCurrentNode);
+								domCurrentDom.setSTarget(nodChild);
+								domCurrentDom.addSType(strEdgeType);
+								domCurrentDom.getLayers().add(lyrPTB);
+								
+								getSDocument().getSDocumentGraph().addSRelation(domCurrentDom);
+	
+								//add edge annotations if desired and present
+								if (bolEdgeAnnos)
+								{
+	
+									anoTemp = nodChild.getSAnnotations().get(0);
+									strTempAnno = anoTemp.getSValueSTEXT().toString();
+									if (strTempAnno.contains(strEdgeAnnoSeparator))
+									{
+										if (!(strTempAnno.startsWith(strEdgeAnnoSeparator)) && !(strTempAnno.indexOf(strEdgeAnnoSeparator)==strTempAnno.length()))
+										{
+											strSplitCompoundAnno[0] = strTempAnno.substring(0, strTempAnno.indexOf(strEdgeAnnoSeparator));
+											strSplitCompoundAnno[1] = strTempAnno.substring(strTempAnno.indexOf(strEdgeAnnoSeparator)+1);
+											anoTemp.setSValue(strSplitCompoundAnno[0]);
+											domCurrentDom.createSAnnotation(strEdgeAnnoNameSpace, strEdgeAnnoName, strSplitCompoundAnno[1]);
+										}
+									}
+								}
+								
+								
 							}
-							
-							
-						}
+							}
 					}
 		
 					//empty the node list
@@ -260,7 +318,7 @@ public class PTBMapper extends PepperMapperImpl {
 		
 		PTBMapper myMapper = new PTBMapper(); 
 		myMapper.setSDocument(SaltFactory.eINSTANCE.createSDocument());
-		myMapper.setResourceURI(URI.createFileURI("D:/ptb_in.txt"));
+		myMapper.setResourceURI(URI.createFileURI("C:/Pepper/corpora/ptb_test/brown_test.ptb"));
 		myMapper.setProperties(myProps);
 		MAPPING_RESULT myMappingResult = myMapper.mapSDocument();
 		Salt2DOT salt2dot= new Salt2DOT();
@@ -279,6 +337,7 @@ public class PTBMapper extends PepperMapperImpl {
 		strEdgeAnnoNameSpace = ((PTBImporterProperties) this.getProperties()).getEdgeAnnoNamespace();
 		strEdgeAnnoName = ((PTBImporterProperties) this.getProperties()).getEdgeAnnoName();
 		bolEdgeAnnos = ((PTBImporterProperties) this.getProperties()).getImportEdgeAnnos();
+		bolHandleSlashTokens = ((PTBImporterProperties) this.getProperties()).getHandleSlashTokens();
 	}
 	
 }

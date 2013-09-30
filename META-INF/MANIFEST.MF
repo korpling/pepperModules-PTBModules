@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1380204407072
+Bnd-LastModified: 1380303373777
 Build-Jdk: 1.6.0_29
 Built-By: Amir
 Bundle-Description: This project provides a module to import the Penn Tr
@@ -13,16 +13,16 @@ Bundle-SymbolicName: de.hu_berlin.german.korpling.saltnpepper.pepperModu
 Bundle-Vendor: Humboldt University of Berlin
 Bundle-Version: 0.0.1.SNAPSHOT
 Created-By: Apache Maven Bundle Plugin
-Export-Package: de.hu_berlin.german.korpling.saltnpepper.pepperModules.s
- ampleModules;uses:="de.hu_berlin.german.korpling.saltnpepper.pepper.pep
- perExceptions,de.hu_berlin.german.korpling.saltnpepper.pepper.pepperMod
- ules,org.eclipse.emf.common.util,de.hu_berlin.german.korpling.saltnpepp
- er.salt.saltCore,de.hu_berlin.german.korpling.saltnpepper.pepper.pepper
- Modules.impl,de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.r
- esources.dot,de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.s
- DocumentStructure,de.hu_berlin.german.korpling.saltnpepper.salt.saltCom
- mon.sCorpusStructure,de.hu_berlin.german.korpling.saltnpepper.salt";ver
- sion="0.0.1.SNAPSHOT"
+Export-Package: de.hu_berlin.german.korpling.saltnpepper.pepperModules.P
+ TBModules;uses:="de.hu_berlin.german.korpling.saltnpepper.pepper.pepper
+ Exceptions,de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModule
+ s,org.eclipse.emf.common.util,de.hu_berlin.german.korpling.saltnpepper.
+ salt.saltCore,de.hu_berlin.german.korpling.saltnpepper.pepper.pepperMod
+ ules.impl,de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.reso
+ urces.dot,de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDoc
+ umentStructure,de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon
+ .sCorpusStructure,de.hu_berlin.german.korpling.saltnpepper.salt";versio
+ n="0.0.1.SNAPSHOT"
 Import-Package: de.hu_berlin.german.korpling.saltnpepper.pepper.pepperEx
  ceptions;version="[1.1,2)",de.hu_berlin.german.korpling.saltnpepper.pep
  per.pepperModules;version="[1.1,2)",de.hu_berlin.german.korpling.saltnp

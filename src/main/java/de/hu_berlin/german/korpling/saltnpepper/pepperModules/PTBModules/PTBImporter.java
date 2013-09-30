@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.sampleModules;
+package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
 
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
@@ -70,6 +70,7 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter
 		this.addSupportedFormat("PTB", "1.0", null);
 		this.getSDocumentEndings().add("ptb");
 		this.getSDocumentEndings().add("txt");
+		this.getSDocumentEndings().add("mrg");
 	}
 	
 	/**

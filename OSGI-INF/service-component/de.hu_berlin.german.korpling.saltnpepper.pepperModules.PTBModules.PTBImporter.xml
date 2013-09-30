@@ -1,6 +1,6 @@
 <container xmlns="http://www.osgi.org/xmlns/scr/v1.1.0">
   <component name="PTBImporterComponent" factory="PepperImporterComponentFactory" activate="activate">
-    <implementation class="de.hu_berlin.german.korpling.saltnpepper.pepperModules.sampleModules.PTBImporter"/>
+    <implementation class="de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporter"/>
     <service>
       <provide interface="de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperImporter"/>
       <provide interface="de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule"/>

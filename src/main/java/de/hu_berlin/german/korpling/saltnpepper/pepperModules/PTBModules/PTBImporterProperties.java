@@ -1,4 +1,4 @@
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.sampleModules;
+package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperty;
@@ -41,6 +41,10 @@ public static final String PREFIX="ptb.importer.";
 	 * Boolean, whether to look for edge annotations after a separator.
 	 */
 	public static final String PROP_IMPORTEDGEANNOS=PREFIX+"importEdgeAnnos";
+	/**
+	 * Boolean, whether to handle Penn atis-style tokens, which are non bracketed and separate the pos tag with a slash, e.g.: (NP two/CD friends/NNS ).
+	 */
+	public static final String PROP_HANDLESLASHTOKENS=PREFIX+"handleSlashTokens";
 
 	
 	public PTBImporterProperties()
@@ -51,6 +55,7 @@ public static final String PREFIX="ptb.importer.";
 		this.addProperty(new PepperModuleProperty<String>(PROP_EDGEANNOSEPARATOR, String.class, "Separator character for edge labels following node annotation, e.g. the '-' in (NP-subj (....","-", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_EDGETYPE, String.class, "Name of edge type for PTB dominance edges, e.g. 'edge'.","edge", false));
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_IMPORTEDGEANNOS, Boolean.class, "Boolean, whether to look for edge annotations after a separator.", true, false));
+		this.addProperty(new PepperModuleProperty<Boolean>(PROP_HANDLESLASHTOKENS, Boolean.class, "Boolean, whether to handle Penn atis-style tokens, which are non bracketed and separate the pos tag with a slash, e.g.: (NP two/CD friends/NNS ).", true, false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_NODENAMESPACE, String.class, "Name of namespace for PTB nodes and their annotations, e.g. 'ptb'.","ptb", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_POSNAME, String.class, "Name of pos annotation name for PTB tokens, e.g. 'pos'.", "pos", false));
 	}
@@ -86,6 +91,10 @@ public static final String PREFIX="ptb.importer.";
 	public synchronized Boolean getImportEdgeAnnos()
 	{
 		return((Boolean)this.getProperty(PROP_IMPORTEDGEANNOS).getValue());
+	}
+	public synchronized Boolean getHandleSlashTokens()
+	{
+		return((Boolean)this.getProperty(PROP_HANDLESLASHTOKENS).getValue());
 	}
 
 	
