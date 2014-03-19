@@ -1,7 +1,7 @@
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperty;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
 
 public class PTBImporterProperties extends PepperModuleProperties {
 
