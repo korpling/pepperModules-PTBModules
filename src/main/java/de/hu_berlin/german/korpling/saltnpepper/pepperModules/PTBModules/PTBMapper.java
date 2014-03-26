@@ -18,9 +18,18 @@
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
 
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.MAPPING_RESULT;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperMapperImpl;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Stack;
+import java.util.Vector;
+
+import org.eclipse.emf.common.util.URI;
+
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.resources.dot.Salt2DOT;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
@@ -30,19 +39,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.management.InstanceAlreadyExistsException;
-
-import org.eclipse.emf.common.util.URI;
 
 public class PTBMapper extends PepperMapperImpl {
 	
@@ -84,17 +80,17 @@ public class PTBMapper extends PepperMapperImpl {
 	//do some initilizations
 	}
 	@Override
-	public MAPPING_RESULT mapSCorpus() {
-	//returns the resource in case of module is an importer or exporter
-	getResourceURI();
-	//returns the SDocument object to be manipulated
-	getSDocument();
-	//returns that process was successful
-	return(MAPPING_RESULT.FINISHED);
+	public DOCUMENT_STATUS mapSCorpus() {
+		//returns the resource in case of module is an importer or exporter
+		getResourceURI();
+		//returns the SDocument object to be manipulated
+		getSDocument();
+		//returns that process was successful
+		return(DOCUMENT_STATUS.COMPLETED);
 	}
 	
 	@Override
-	public MAPPING_RESULT mapSDocument() {
+	public DOCUMENT_STATUS mapSDocument() {
 
 		PTBImporterProperties myProps = new PTBImporterProperties();
 		this.setProperties(myProps);
@@ -189,7 +185,7 @@ public class PTBMapper extends PepperMapperImpl {
 		
 		txtText.setSText(stbText.toString());
 		
-		return(MAPPING_RESULT.FINISHED);
+		return(DOCUMENT_STATUS.COMPLETED);
 	}
 	
 	public void mapSentence(String strSentence) {
@@ -329,6 +325,10 @@ public class PTBMapper extends PepperMapperImpl {
 
 	}
 
+	/**
+	 * @Amir: Is it possible, to make unit tests out of this?
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		//System.out.println("hallo");
 		PTBImporterProperties myProps = new PTBImporterProperties();
@@ -337,7 +337,7 @@ public class PTBMapper extends PepperMapperImpl {
 		myMapper.setSDocument(SaltFactory.eINSTANCE.createSDocument());
 		myMapper.setResourceURI(URI.createFileURI("C:/Pepper/corpora/ptb_test/brown_test.ptb"));
 		myMapper.setProperties(myProps);
-		MAPPING_RESULT myMappingResult = myMapper.mapSDocument();
+		DOCUMENT_STATUS myMappingResult = myMapper.mapSDocument();
 		Salt2DOT salt2dot= new Salt2DOT();
 		salt2dot.salt2Dot(myMapper.getSDocument().getSDocumentGraph(), URI.createFileURI("D:/dot_out.dot"));
 		System.out.println("done");
@@ -345,7 +345,6 @@ public class PTBMapper extends PepperMapperImpl {
 	}
 	
 	private void getSettings(){
-		
 		strNamespace = ((PTBImporterProperties) this.getProperties()).getNodeNamespace(); 
 		strPosName = ((PTBImporterProperties) this.getProperties()).getPosName();
 		strCatName = ((PTBImporterProperties) this.getProperties()).getCatName();
