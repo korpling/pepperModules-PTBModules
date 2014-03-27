@@ -53,8 +53,12 @@
   </organization>
  
   <dependencies>
-    <!-- TODO /10/ ... put here all the dependencies you need, which are not already included in the parent project...-->
-  </dependencies>
+<dependency>
+	<groupId>junit</groupId>
+	<artifactId>junit</artifactId>
+	<version>4.11</version>
+</dependency>
+              </dependencies>
   <build>
     <plugins>
       <!-- start: Plugin for automatic releasing -->

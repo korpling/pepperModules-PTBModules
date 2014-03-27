@@ -27,9 +27,9 @@ import java.util.Vector;
 
 import org.eclipse.emf.common.util.URI;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.MAPPING_RESULT;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.resources.dot.Salt2DOT;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
@@ -80,17 +80,17 @@ public class PTBMapper extends PepperMapperImpl {
 	//do some initilizations
 	}
 	@Override
-	public DOCUMENT_STATUS mapSCorpus() {
-		//returns the resource in case of module is an importer or exporter
-		getResourceURI();
-		//returns the SDocument object to be manipulated
-		getSDocument();
-		//returns that process was successful
-		return(DOCUMENT_STATUS.COMPLETED);
+	public MAPPING_RESULT mapSCorpus() {
+	//returns the resource in case of module is an importer or exporter
+	getResourceURI();
+	//returns the SDocument object to be manipulated
+	getSDocument();
+	//returns that process was successful
+	return(MAPPING_RESULT.FINISHED);
 	}
 	
 	@Override
-	public DOCUMENT_STATUS mapSDocument() {
+	public MAPPING_RESULT mapSDocument() {
 
 		PTBImporterProperties myProps = new PTBImporterProperties();
 		this.setProperties(myProps);
@@ -103,7 +103,7 @@ public class PTBMapper extends PepperMapperImpl {
 		
 		txtText = getSDocument().getSDocumentGraph().createSTextualDS("");
 
-		
+
 		BufferedReader br = null;
 	    try{
 	    	
@@ -112,12 +112,19 @@ public class PTBMapper extends PepperMapperImpl {
 	        String line;
 	        String strValidate = br.readLine();
 
+	        if (strValidate == null){
+	        	throw new PepperModuleException("Cannot find text file to process - Input is null");
+	        }
 	        
         	while (!(strValidate.trim().startsWith("("))) //every line should start with a '(', otherwise ignore it
         	{
         		strValidate = br.readLine();
         	}
-	        line = strValidate.trim();
+        	
+        	line = strValidate;
+        	
+       	
+	        line.trim();
         	
 	        while (strValidate != null) {
 	            if (CountInString(line, "(") == CountInString(line, ")"))
@@ -125,7 +132,9 @@ public class PTBMapper extends PepperMapperImpl {
 		            //sentence is complete
             		//line = line.replaceAll("([^ ])\\(", "'$1' (");
 	            	if (bolHandleSlashTokens){
-	            		line = line.replaceAll(" ([^ /]+)/([^ ]+) "," ('$1' '$2') ");
+	            		//line = line.replaceAll(" ([^ /]+)/([^ ]+) "," ('$1' '$2') ");
+	                	line = line.replaceAll("(?<= )([^ \\(\\)]+)/([^ \\(\\)]+)(?= )", "($2 $1)");
+
 	            	}
 	            	
 		            mapSentence(line);
@@ -185,7 +194,7 @@ public class PTBMapper extends PepperMapperImpl {
 		
 		txtText.setSText(stbText.toString());
 		
-		return(DOCUMENT_STATUS.COMPLETED);
+		return(MAPPING_RESULT.FINISHED);
 	}
 	
 	public void mapSentence(String strSentence) {
@@ -210,7 +219,7 @@ public class PTBMapper extends PepperMapperImpl {
 					strPos = strSingleNode.substring(0, strSingleNode.indexOf(' ')); //this is the pos tag
 					strTok = strSingleNode.substring(strSingleNode.indexOf(' ')).trim();
 					strTok = strTok.replace(")", "");
-					
+					strTok = strTok.trim();
 
 					//put strTok + " " into STextualDS
 					intTokStartChar = stbText.toString().length();				
@@ -325,19 +334,16 @@ public class PTBMapper extends PepperMapperImpl {
 
 	}
 
-	/**
-	 * @Amir: Is it possible, to make unit tests out of this?
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		//System.out.println("hallo");
 		PTBImporterProperties myProps = new PTBImporterProperties();
 		
 		PTBMapper myMapper = new PTBMapper(); 
 		myMapper.setSDocument(SaltFactory.eINSTANCE.createSDocument());
-		myMapper.setResourceURI(URI.createFileURI("C:/Pepper/corpora/ptb_test/brown_test.ptb"));
+		//myMapper.setResourceURI(URI.createFileURI("C:/Pepper/corpora/ptb_test/brown_test.ptb"));
+		myMapper.setResourceURI(URI.createFileURI("C:/Pepper/corpora/Penn.Treebank/atis/atis3_mini.mrg"));
 		myMapper.setProperties(myProps);
-		DOCUMENT_STATUS myMappingResult = myMapper.mapSDocument();
+		MAPPING_RESULT myMappingResult = myMapper.mapSDocument();
 		Salt2DOT salt2dot= new Salt2DOT();
 		salt2dot.salt2Dot(myMapper.getSDocument().getSDocumentGraph(), URI.createFileURI("D:/dot_out.dot"));
 		System.out.println("done");
@@ -345,6 +351,7 @@ public class PTBMapper extends PepperMapperImpl {
 	}
 	
 	private void getSettings(){
+		
 		strNamespace = ((PTBImporterProperties) this.getProperties()).getNodeNamespace(); 
 		strPosName = ((PTBImporterProperties) this.getProperties()).getPosName();
 		strCatName = ((PTBImporterProperties) this.getProperties()).getCatName();

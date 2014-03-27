@@ -1,0 +1,20 @@
+( @0y0012sx-a-11/CD )
+( END_OF_TEXT_UNIT )
+( (S 
+    (NP-SBJ */XXX )
+    (VP List/VB 
+      (NP 
+        (NP the/DT flights/NNS )
+        (PP-DIR from/IN 
+          (NP Baltimore/NNP ))
+        (PP-DIR to/TO 
+          (NP Seattle/NNP ))
+        (SBAR 
+          (WHNP-1 that/WDT )
+          (S 
+            (NP-SBJ *T*-1/XXX )
+            (VP stop/VBP 
+              (PP-LOC in/IN 
+                (NP Minneapolis/NNP )))))))))
+( END_OF_TEXT_UNIT )
+( @0y0022sx-d-5/CD )
