@@ -27,9 +27,9 @@ import java.util.Vector;
 
 import org.eclipse.emf.common.util.URI;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.MAPPING_RESULT;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperMapperImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.resources.dot.Salt2DOT;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
@@ -80,17 +80,17 @@ public class PTBMapper extends PepperMapperImpl {
 	//do some initilizations
 	}
 	@Override
-	public MAPPING_RESULT mapSCorpus() {
+	public DOCUMENT_STATUS mapSCorpus() {
 	//returns the resource in case of module is an importer or exporter
 	getResourceURI();
 	//returns the SDocument object to be manipulated
 	getSDocument();
 	//returns that process was successful
-	return(MAPPING_RESULT.FINISHED);
+	return(DOCUMENT_STATUS.COMPLETED);
 	}
 	
 	@Override
-	public MAPPING_RESULT mapSDocument() {
+	public DOCUMENT_STATUS mapSDocument() {
 
 		PTBImporterProperties myProps = new PTBImporterProperties();
 		this.setProperties(myProps);
@@ -194,7 +194,7 @@ public class PTBMapper extends PepperMapperImpl {
 		
 		txtText.setSText(stbText.toString());
 		
-		return(MAPPING_RESULT.FINISHED);
+		return(DOCUMENT_STATUS.COMPLETED);
 	}
 	
 	public void mapSentence(String strSentence) {
@@ -334,22 +334,6 @@ public class PTBMapper extends PepperMapperImpl {
 
 	}
 
-	public static void main(String[] args) {
-		//System.out.println("hallo");
-		PTBImporterProperties myProps = new PTBImporterProperties();
-		
-		PTBMapper myMapper = new PTBMapper(); 
-		myMapper.setSDocument(SaltFactory.eINSTANCE.createSDocument());
-		//myMapper.setResourceURI(URI.createFileURI("C:/Pepper/corpora/ptb_test/brown_test.ptb"));
-		myMapper.setResourceURI(URI.createFileURI("C:/Pepper/corpora/Penn.Treebank/atis/atis3_mini.mrg"));
-		myMapper.setProperties(myProps);
-		MAPPING_RESULT myMappingResult = myMapper.mapSDocument();
-		Salt2DOT salt2dot= new Salt2DOT();
-		salt2dot.salt2Dot(myMapper.getSDocument().getSDocumentGraph(), URI.createFileURI("D:/dot_out.dot"));
-		System.out.println("done");
-		
-	}
-	
 	private void getSettings(){
 		
 		strNamespace = ((PTBImporterProperties) this.getProperties()).getNodeNamespace(); 

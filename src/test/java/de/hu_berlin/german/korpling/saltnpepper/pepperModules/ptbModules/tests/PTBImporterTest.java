@@ -9,7 +9,6 @@ import java.io.IOException;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Test;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.MAPPING_RESULT;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBMapper;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
@@ -59,14 +58,20 @@ public class PTBImporterTest {
 "                        ('' '') ))))))))))))\n";
 		
 		String strTemp = System.getProperty("java.io.tmpdir");
+		if (!strTemp.endsWith("/")){
+			strTemp= strTemp+ "/";
+		}
 		File flTemp = new File(strTemp + "testStandardDialect.txt");
 		FileWriter flwTemp = new FileWriter(flTemp);
-		flwTemp.write(strStandardDialectExample);
-		flwTemp.flush();
-		
+		try{
+			flwTemp.write(strStandardDialectExample);
+			flwTemp.flush();
+		}finally{
+			flwTemp.close();
+		}
 		myMapper.setResourceURI(URI.createFileURI(flTemp.getAbsolutePath()));
 		
-		MAPPING_RESULT myMappingResult = myMapper.mapSDocument();
+		myMapper.mapSDocument();
 		//Salt2DOT salt2dot= new Salt2DOT();
 		//salt2dot.salt2Dot(myMapper.getSDocument().getSDocumentGraph(), URI.createFileURI("D:/dot_out.dot"));
 		
@@ -106,7 +111,7 @@ public class PTBImporterTest {
 		
 		myMapper.setResourceURI(URI.createFileURI("./src/test/resources/atis3_mini.mrg"));
 		
-		MAPPING_RESULT myMappingResult = myMapper.mapSDocument();
+		myMapper.mapSDocument();
 		//System.out.println(myMapper.getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
 		
 		//Check number of texts
@@ -143,7 +148,7 @@ public class PTBImporterTest {
 		
 		myMapper.setResourceURI(URI.createFileURI("./src/test/resources/Feigenblatt.ptb"));
 		
-		MAPPING_RESULT myMappingResult = myMapper.mapSDocument();
+		myMapper.mapSDocument();
 		//System.out.println(myMapper.getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
 		
 		//Check number of texts
