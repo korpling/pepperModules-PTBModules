@@ -25,13 +25,10 @@ import java.io.IOException;
 import java.util.Stack;
 import java.util.Vector;
 
-import org.eclipse.emf.common.util.URI;
-
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.resources.dot.Salt2DOT;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
@@ -40,7 +37,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 
-public class PTBMapper extends PepperMapperImpl {
+public class PTBImporterMapper extends PepperMapperImpl {
 	
 
 	
@@ -92,12 +89,9 @@ public class PTBMapper extends PepperMapperImpl {
 	@Override
 	public DOCUMENT_STATUS mapSDocument() {
 
-		PTBImporterProperties myProps = new PTBImporterProperties();
-		this.setProperties(myProps);
-		getSettings(); //initialize values for special parameters (configurable annotation names etc.)
+		getSettings();
 		lyrPTB.setSName(strNamespace);
 
-		
 		if (getSDocument().getSDocumentGraph()== null)
 			{getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());}
 		

@@ -20,18 +20,18 @@ package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperImporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperExporter;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleNotReadyException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperImporterImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperExporterImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 /**
- * This is a sample {@link PepperImporter}, which can be used for creating individual Importers for the 
+ * This is a sample {@link PepperExporter}, which can be used for creating individual Exporters for the 
  * Pepper Framework. Therefore you have to take a look to todo's and adapt the code.
  * 
  * <ul>
@@ -47,9 +47,9 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
  * @version 1.0
  *
  */
-//TODO change the name of the component, for example use the format name and the ending Importer (FORMATImporterComponent)
-@Component(name="PTBImporterComponent", factory="PepperImporterComponentFactory")
-public class PTBImporter extends PepperImporterImpl implements PepperImporter
+//TODO change the name of the component, for example use the format name and the ending Exporter (FORMATExporterComponent)
+@Component(name="PTBExporterComponent", factory="PepperExporterComponentFactory")
+public class PTBExporter extends PepperExporterImpl implements PepperExporter
 {
 
 // =================================================== mandatory ===================================================
@@ -60,16 +60,13 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter
 	 * The coordinates (modules name, version and supported formats) are a kind of a fingerprint, 
 	 * which should make your module unique.
 	 */
-	public PTBImporter()
+	public PTBExporter()
 	{
 		super();
-		this.setName("PTBImporter");
+		this.setName("PTBExporter");
 		this.setVersion("0.0.1");
 		this.addSupportedFormat("PTB", "1.0", null);
-		this.getSDocumentEndings().add("ptb");
-		this.getSDocumentEndings().add("txt");
-		this.getSDocumentEndings().add("mrg");
-		this.setProperties(new PTBImporterProperties());
+		this.setProperties(new PTBExporterProperties());
 	}
 	
 	/**
@@ -87,28 +84,16 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter
 	 */
 	public PepperMapper createPepperMapper(SElementId sElementId)
 	{
-		PepperMapper ptbmap = new PTBImporterMapper();
+		PTBExporterMapper ptbmap = new PTBExporterMapper();
+		if (sElementId.getSIdentifiableElement() instanceof SDocument){
+			ptbmap.setResourceURI(getSElementId2ResourceTable().get(sElementId));
+		}
 		return(ptbmap);
 	}
 	
 	
 	
 	
-	/**
-	 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong>
-	 * 
-	 * This method is called by the pepper framework and returns if a corpus located at the given {@link URI} is importable
-	 * by this importer. If yes, 1 must be returned, if no 0 must be returned. If it is not quite sure, if the given corpus
-	 * is importable by this importer any value between 0 and 1 can be returned. If this method is not overridden, 
-	 * null is returned.
-	 * @return 1 if corpus is importable, 0 if corpus is not importable, 0 < X < 1, if no definitiv answer is possible,  null if method is not overridden 
-	 */
-	public Double isImportable(URI corpusPath)
-	{
-		//TODO some code to analyze the given corpus-structure
-		return(null);
-	}
-
 // =================================================== optional ===================================================	
 	/**
 	 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong>

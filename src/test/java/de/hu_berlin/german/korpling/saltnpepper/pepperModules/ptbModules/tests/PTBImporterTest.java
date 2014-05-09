@@ -27,7 +27,7 @@ import org.eclipse.emf.common.util.URI;
 import org.junit.Test;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBMapper;
+import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterMapper;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 
 public class PTBImporterTest {
@@ -42,7 +42,7 @@ public class PTBImporterTest {
 		
 		PTBImporterProperties myProps = new PTBImporterProperties();
 		
-		PTBMapper myMapper = new PTBMapper(); 
+		PTBImporterMapper myMapper = new PTBImporterMapper(); 
 		myMapper.setSDocument(SaltFactory.eINSTANCE.createSDocument());
 		
 		
@@ -119,7 +119,7 @@ public class PTBImporterTest {
 		
 		PTBImporterProperties myProps = new PTBImporterProperties();
 		
-		PTBMapper myMapper = new PTBMapper(); 
+		PTBImporterMapper myMapper = new PTBImporterMapper(); 
 		myMapper.setSDocument(SaltFactory.eINSTANCE.createSDocument());
 		
 		
@@ -156,7 +156,7 @@ public class PTBImporterTest {
 		
 		PTBImporterProperties myProps = new PTBImporterProperties();
 		
-		PTBMapper myMapper = new PTBMapper(); 
+		PTBImporterMapper myMapper = new PTBImporterMapper(); 
 		myMapper.setSDocument(SaltFactory.eINSTANCE.createSDocument());
 		
 		
@@ -166,7 +166,7 @@ public class PTBImporterTest {
 		myMapper.setResourceURI(URI.createFileURI("./src/test/resources/Feigenblatt.ptb"));
 		
 		myMapper.mapSDocument();
-		//System.out.println(myMapper.getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		//System.out.println(myMapper.getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText().length());
 		
 		//Check number of texts
 		assertEquals(1, myMapper.getSDocument().getSDocumentGraph().getSTextualDSs().size());
