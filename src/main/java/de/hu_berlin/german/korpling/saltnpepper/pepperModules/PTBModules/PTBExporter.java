@@ -67,6 +67,8 @@ public class PTBExporter extends PepperExporterImpl implements PepperExporter
 		this.setVersion("0.0.1");
 		this.addSupportedFormat("PTB", "1.0", null);
 		this.setProperties(new PTBExporterProperties());
+		setSDocumentEnding("ptb");
+		setExportMode(EXPORT_MODE.DOCUMENTS_IN_FILES);
 	}
 	
 	/**
@@ -85,6 +87,7 @@ public class PTBExporter extends PepperExporterImpl implements PepperExporter
 	public PepperMapper createPepperMapper(SElementId sElementId)
 	{
 		PTBExporterMapper ptbmap = new PTBExporterMapper();
+		System.out.println("out: "+ getSElementId2ResourceTable());
 		if (sElementId.getSIdentifiableElement() instanceof SDocument){
 			ptbmap.setResourceURI(getSElementId2ResourceTable().get(sElementId));
 		}

@@ -35,9 +35,9 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
 public class PTBExporterMapper extends PepperMapperImpl implements SGraphTraverseHandler {
 	
-public StringBuilder stbOutput;
+	public StringBuilder stbOutput= new StringBuilder();
 	
-//	//manage settings
+	//manage settings
 	private String strNamespace ; 
 	private String strPosName ;
 	private String strCatName ; 
@@ -47,56 +47,24 @@ public StringBuilder stbOutput;
 	private String strEdgeAnnoName; 
 	private Boolean bolEdgeAnnos; 
 	private Boolean bolHandleSlashTokens; 
-//	
-//	
-//	//Declare Salt Objects
-//	private StringBuilder stbText = new StringBuilder();
-//	private STextualDS txtText = null;
-//	private SLayer lyrPTB = SaltFactory.eINSTANCE.createSLayer();
-//	
-//	//Other globals
-//	private Stack<Vector<SNode>> stNodeVectors = new Stack<Vector<SNode>>();
-//	private String strPos = ""; //holds the current pos tag
-//	private String strTok = ""; //holds the current token
-//	private String strNode = ""; //holds the current node (i.e. cat annotation value)
-//	private String strSplitCompoundAnno[] = new String[2];
-//	private String strTempAnno;
-//	private SAnnotation anoTemp = null;
-//	private int intTokStartChar;
-//	private int intTokEndChar;
-//	private Vector<SNode> vecNodeList = new Vector<SNode>(); 	//Node List - to be dominated by next node
-//	
-//	private int intCountClosingBrackets=0;
-	
-	@Override
-	protected void initialize(){
-	//do some initilizations
-	}
-//	@Override
-//	public DOCUMENT_STATUS mapSCorpus() {
-//	//returns the resource in case of module is an importer or exporter
-//	getResourceURI();
-//	//returns the SDocument object to be manipulated
-//	getSDocument();
-//	//returns that process was successful
-//	return(DOCUMENT_STATUS.COMPLETED);
-//	}
 	
 	@Override
 	public DOCUMENT_STATUS mapSDocument() {
 		
 		if (getSDocument() != null && getSDocument().getSDocumentGraph() !=null ) {
-			
+			// initializes setting variables (see above)
 			getSettings();
-			
-			
+			// traverses the document-structure (this is a call back and will invoke #checkConstraint, #nodeReached and #nodeLeft())
 			getSDocument().getSDocumentGraph().traverse(getSDocument().getSDocumentGraph().getSRoots(), GRAPH_TRAVERSE_TYPE.TOP_DOWN_DEPTH_FIRST, "TraverseTrees", this);
 			
-			
-			File flTemp = new File(getResourceURI().toFileString());
+			File outputFile = new File(getResourceURI().toFileString());
+			if (	(!outputFile.isDirectory())&&
+					(!outputFile.getParentFile().exists())){
+				outputFile.getParentFile().mkdirs();
+			}
 			FileWriter flwTemp = null;
 			try{
-				flwTemp= new FileWriter(flTemp);
+				flwTemp= new FileWriter(outputFile);
 				flwTemp.write(stbOutput.toString());
 				flwTemp.flush();
 			}catch(IOException e){
@@ -104,7 +72,9 @@ public StringBuilder stbOutput;
 			}
 			finally{
 				try {
-					flwTemp.close();
+					if (flwTemp!= null){
+						flwTemp.close();
+					}
 				} catch (IOException e) {
 					throw new PepperModuleException(this, "Unable to close output file writer for PTB export '"+getResourceURI()+"'.",e);
 				}
@@ -132,7 +102,8 @@ public StringBuilder stbOutput;
 	if(relCurrentRelation==null || relCurrentRelation instanceof SDominanceRelation) //if this node is a root or it has an incoming dominance relationship
 		{
 			if (strNamespace != null && !strNamespace.isEmpty()) {
-				for (SLayer sLayer: nodCurrentNode.getSLayers()){ //iterate through layers of this node to find user defined namespace setting
+				for (SLayer sLayer: nodCurrentNode.getSLayers()){ 
+					//iterate through layers of this node to find user defined namespace setting
 					if( sLayer.getSName().equals(strNamespace)){ 
 						bolFoundNamespace = true; //found matching namespace, done searching layers
 						break;
@@ -167,8 +138,6 @@ public StringBuilder stbOutput;
 		if (relCurrentRelation == null) {//leaving a root, sentence is complete
 			stbOutput.append("\n");
 		}
-
-	
 	}
 	
 	@Override
@@ -204,9 +173,7 @@ public StringBuilder stbOutput;
 				}
 			}
 			stbOutput.append(" ("+strAnnoOut);
-			
-		}
-		
+		}	
 	}
 	
 	private void getSettings(){
@@ -219,10 +186,5 @@ public StringBuilder stbOutput;
 		strEdgeAnnoName = ((PTBExporterProperties) this.getProperties()).getEdgeAnnoName();
 		bolEdgeAnnos = ((PTBExporterProperties) this.getProperties()).getImportEdgeAnnos();
 		bolHandleSlashTokens = ((PTBExporterProperties) this.getProperties()).getHandleSlashTokens();
-		
-	}
-
-	
+	}	
 }
-
-

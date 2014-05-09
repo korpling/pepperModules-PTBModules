@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.CorpusDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperExporterTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBExporter;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
@@ -17,6 +18,11 @@ public class PTBExporterTest extends PepperExporterTest {
 	public void setUp(){		
 		setFixture(new PTBExporter());
 		getFixture().setSaltProject(SaltFactory.eINSTANCE.createSaltProject());
+		//set formats to support
+		FormatDesc formatDef= new FormatDesc();
+		formatDef.setFormatName("PTB");
+		formatDef.setFormatVersion("1.0");
+		this.supportedFormatsCheck.add(formatDef);
 	}
 	
 	@Test
@@ -32,9 +38,7 @@ public class PTBExporterTest extends PepperExporterTest {
 		CorpusDesc corpusDesc= new CorpusDesc();
 		corpusDesc.setCorpusPath(URI.createURI(getTempPath("ptbTest").toString()));
 		getFixture().setCorpusDesc(corpusDesc);
-		System.out.println(corpusDesc.getCorpusPath());
 		this.start();
-		
 	}
 
 }
