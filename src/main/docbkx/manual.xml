@@ -5,21 +5,19 @@
 		<title>PTBModules</title>
 		<subtitle>User&apos;s Guide</subtitle>
 		<authorgroup>
-			<author><personname><firstname>YOUR</firstname> <surname>
-			NAME</surname></personname></author>
+			<author><personname><firstname>Amir</firstname> <surname>
+			Zeldes</surname></personname></author>
 		</authorgroup>
-		<copyright><year>THE DATE OF NOW</year> <holder>YOUR NAME, All rights 
+		<copyright><year>2014</year> <holder>Amir Zeldes, All rights 
 		reserved.</holder></copyright>
 		<releaseinfo>Version ${project.version}</releaseinfo>
 	</info>
 	<preface>
 		<title>Foreword</title>
-		<para>The intention of this document is first to give a guide to the 
-		user of how to use the here mentioned Pepper modules and how to 
-		utilize a mapping performed by them. Second this document shall give 
-		a closer view in the details of such a mapping in a declarative way, 
-		to give the user a chance to understand how specific data will be 
-		mapped by the presented Pepper modules.</para>
+		<para>This guide documents the usage of the PTBModules in SaltNPepper, which are used to import/export data from/to the Penn Treebank bracket format over the Salt metamodel. 
+			Several 'dialects' of the PTB format are supported, and some related optional settings are described below. Note
+			that PTB data is by its nature a hierarchical tree structure, meaning that dominance nodes in a canonical tree formation should convert properly, but not necessarily any form
+		of Salt graph. By contrast, all information from a PTB document should be mappable to Salt.</para>
 	</preface>
 	<chapter>
 		<title>Overview</title>
@@ -29,7 +27,7 @@
 		given in <xref linkend="table_overview"/>. You can use these 
 		coordinates in a Pepper workflow description file to identify the 
 		modules in a Pepper conversion process. A description of how to model 
-		a workfloe description file can be found under 
+		a workflow description file can be found under 
 		https://korpling.german.hu-berlin.de/saltnpepper/.</para>
 		<table frame="all" xml:id="table_overview">
 			<title>Pepper modules contained in this project</title>
@@ -43,11 +41,16 @@
 				</thead>
 				<tbody>
 					<row>
-						<entry>
-						<xref endterm="sample_importer_name" linkend="sample_importer"/>
-						</entry>
-						<entry>importer</entry>
-						<entry>version</entry>
+						<entry>PTBImporter</entry>
+						<entry>Importer</entry>
+						<entry>PTB (Penn Treebank-style bracket format)</entry>
+						
+					</row>
+					<row>
+						<entry>PTBExporter</entry>
+						<entry>Exporter</entry>
+						<entry>PTB (Penn Treebank-style bracket format)</entry>
+						
 					</row>
 				</tbody>
 			</tgroup>
@@ -58,32 +61,78 @@
 		<para>This chapter contains the changes in version ${project.version} 
 		compared to the previous version.</para>
 		<section>
-			<title><xref linkend="sample_importer_name"/></title>
+			<title><xref linkend="ptb_importer_name"/></title>
 			<itemizedlist spacing="compact">
 				<listitem>
-					<para>Change 1</para>
-					<para>Change 2</para>
+					<para>No changes (first released version)</para>
 				</listitem>
 			</itemizedlist>
 		</section>
 	</chapter>
-	<chapter xml:id="sample_importer">
-		<title xml:id="sample_importer_name">SampleImporter</title>
-		<para>General information about this importer.</para>
+	<chapter xml:id="ptb_importer">
+		<title xml:id="ptb_importer_name">PTBImporter</title>
+		<para>This module imports text files in the PTB format into a Salt corpus.</para>
 		<sect1>
 			<title>Mapping to Salt</title>
-			<para>This section shall describe the mapping from the original 
-			format to a Salt model.</para>
+			<para>
+				Each PTB format text file is mapped to a single Salt document. Multiple files in a folder are interpreted as a corpus or subcorpus containing those documents. It is possible to have a folder hierarchy corresponding to a 
+				corpus with multiple corpora. The documents in each subcorpus are text files with the expected extension .txt, .ptb or .mrg.
+			</para>
+			<para>
+				A single PTB text document for import has the following form:
+			</para>
+			<programlisting><![CDATA[
+				    (S  
+      (PP (IN In)  
+        (NP (JJ American) (NN romance) )) 
+      (, ,)  
+      (NP-SBJ-2 (RB almost) (NN nothing) ) 
+      (VP (VBZ rates)  
+        (S  
+          (NP-SBJ (-NONE- *-2) ) 
+          (ADJP-PRD  
+            (ADJP (JJR higher) ) 
+            (PP (IN than)  
+              (SBAR-NOM  
+                (WHNP-1 (WP what) ) 
+                (S  
+                  (NP-SBJ (DT the) (NN movie) (NNS men) ) 
+                  (VP (VB have)  
+                    (VP (VBN called)  
+                      (S  
+                        (NP-SBJ (-NONE- *T*-1) ) 
+                        (`` ``)  
+                        (S-NOM-PRD  
+                          (NP-SBJ (-NONE- *) ) 
+                          (VP (NN meeting)  
+                            (NP (JJ cute) ))) 
+                        ('' '') ))))))))))));
+			]]>
+			</programlisting>
+			<para>Each opening bracket represents deeper embedding in the tree hierarchy. Terminal nodes (i.e. tokens/word forms) are found in the inner-most brackets
+			aligned with the closing bracket to the right. Their part-of-speech tag is aligned to the left, e.g. in the token "(VB have)", which stands for the word "have", with 
+			the part-of-speech "VB". Sentences can be indented as in the example above, for easier human readability, but one-line per sentence format is also supported: white space between
+			tree nodes is completely ignored. A sentence beginning is recognized wherever an openning brackets is found, and the end of the sentence is detected when an equal number
+			of opening and closing brackets have been found. Multiple sentences in one line are no supported.
+			</para>
+			<para>In some PTB style corpora, node 'functions' are designated after a separator in the node name, and these may optionally be interprested as edge labels. For example,
+			in "(NP-SBJ" above, the segment "-SBJ" signifies that this node is the subject of the sentence. This part of the node label can be optionally removed and used as an edge annotation
+			for the incoming edge (see <xref endterm="ptb_importer_properties" linkend="ptb_importer_properties"/> below).
+			</para>
+			<para>Some corpora have a different notation for tokens, where they are not bracketed and the word form precedes the part-of-speech, which is separated by a slash (a.k.a. "atis-style"). For example:</para>
+<programlisting>(NP two/CD friends/NNS )</programlisting>
+			<para>This PTB 'dialect' is also supported, and support for such tokens can be switched on or off using the <xref endterm="ptb_importer_properties" linkend="ptb_importer_properties"/> below </para>
+
 		</sect1>
 		<sect1>
-			<title>Properties</title>
+			<title xml:id="ptb_importer_properties">Properties</title>
 			<para>The table <xref linkend="importer_prop_overview"/> contains an 
 			overview of all usable properties to customize the behaviour of this 
-			Pepper module. The following section contains a close description to 
-			each single property and describes the resulting differences in the 
+			Pepper module. The following section contains a description of 
+			each property and describes the resulting differences in the 
 			mapping to the Salt model.</para>
 			<table frame="all" xml:id="importer_prop_overview">
-				<title>properties to customize importer behaviour</title>
+				<title>Properties to customize importer behaviour</title>
 				<tgroup align="left" cols="4" colsep="1" rowsep="1">
 					<thead>
 						<row>
@@ -95,24 +144,300 @@
 					</thead>
 					<tbody>
 						<row>
-							<entry>
-							<xref endterm="importer_prop1_title" linkend="prop_prop1"/>
-							</entry>
-							<entry>data type (e.g. Boolean) or a list of possible values 
-							(e.g. value1|value2)</entry>
-							<entry>optional|mandatory</entry>
-							<entry>default value</entry>
-						</row>
+							<entry><xref endterm="nodeNamespace" linkend="prop_prop1"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>ptb</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="posName" linkend="prop_prop2"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>pos</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="catName" linkend="prop_prop3"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>cat</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="edgeType" linkend="prop_prop4"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>edge</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="edgeAnnoSeparator" linkend="prop_prop5"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>-</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="edgeAnnoNamespace" linkend="prop_prop6"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>ptb</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="edgeAnnoName" linkend="prop_prop7"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>func</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="importEdgeAnnos" linkend="prop_prop8"/></entry>
+							<entry>Boolean</entry>
+							<entry>optional</entry>
+							<entry>true</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="handleSlashTokens" linkend="prop_prop9"/></entry>
+							<entry>Boolean</entry>
+							<entry>optional</entry>
+							<entry>true</entry>
+						</row>	
 					</tbody>
 				</tgroup>
 			</table>
 			<sect2 xml:id="prop_prop1">
-				<title xml:id="importer_prop1_title">
-				sampleImporter.property1</title>
-				<para><code>sampleImporter.property1=SYNOPSIS (e.g. &apos;value1, 
-				value2&apos; for lsits)</code></para>
-				<para>A detailed description of the property and resulting 
-				differences in the mapping to the Salt model.</para>
+				<title xml:id="nodeNamespace">
+					nodeNamespace</title>
+				<para><code>nodeNamespace=ptb</code></para>
+				<para>Determines the name of the Salt layer assigned to tree nodes on import.</para>
+			</sect2>
+			<sect2 xml:id="prop_prop2">
+				<title xml:id="posName">
+					posName</title>
+				<para><code>posName=pos</code></para>
+				<para>Name of pos annotation name for PTB tokens, e.g. 'pos'.</para>
+			</sect2>
+			<sect2 xml:id="prop_prop3">
+				<title xml:id="catName">
+					catName</title>
+				<para><code>catName=cat</code></para>
+				<para>Name of category annotation for PTB non-terminal nodes, e.g. 'cat'.</para>
+			</sect2>
+			<sect2 xml:id="prop_prop4">
+				<title xml:id="edgeType">
+					edgeType</title>
+				<para><code>edgeType=edge</code></para>
+				<para>Name of edge type for PTB dominance edges, e.g. 'edge'.</para>
+			</sect2>
+			<sect2 xml:id="prop_prop5">
+				<title xml:id="edgeAnnoSeparator">
+					edgeAnnoSeparator</title>
+				<para><code>edgeAnnoSeparator=-</code></para>
+				<para>Separator character for edge labels following node annotation, e.g. the '-' in (NP-subj (....</para>
+			</sect2>
+			<sect2 xml:id="prop_prop6">
+				<title xml:id="edgeAnnoNamespace">
+					edgeAnnoNamespace</title>
+				<para><code>edgeAnnoNamespace=ptb</code></para>
+				<para>Namespace for PTB edge annotations (represented within a node label after a separator), e.g. 'ptb'.</para>
+			</sect2>
+			<sect2 xml:id="prop_prop7">
+				<title xml:id="edgeAnnoName">
+					edgeAnnoName</title>
+				<para><code>edgeAnnoName=func</code></para>
+				<para>Name of PTB dominance edge annotation name, e.g. 'func'.</para>
+			</sect2>
+			<sect2 xml:id="prop_prop8">
+				<title xml:id="importEdgeAnnos">
+					nodeNamespace</title>
+				<para><code>importEdgeAnnos=true</code></para>
+				<para>Boolean, whether to look for edge annotations after a separator.</para>
+			</sect2>
+			<sect2 xml:id="prop_prop9">
+				<title xml:id="handleSlashTokens">
+					handleSlashTokens</title>
+				<para><code>handleSlashTokens=true</code></para>
+				<para>Boolean, whether to handle Penn atis-style tokens, which are non bracketed and separate the pos tag with a slash, e.g.: (NP two/CD friends/NNS ).</para>
+			</sect2>
+		</sect1>
+	</chapter>
+	<chapter xml:id="ptb_exporter">
+		<title xml:id="ptb_exporter_name">PTBExporter</title>
+		<para>This module exports text files in the PTB format from a Salt representation.</para>
+		<sect1>
+			<title>Mapping from Salt</title>
+			<para>
+				Each Salt document is mapped to a single PTB text file. Multiple documents in subcorpora are interpreted as a folder structure with multiple text files in each subcorpus folder.
+			</para>
+			<para>
+				A single PTB text document generated by the exporter might look like this:
+			</para>
+			<programlisting><![CDATA[
+				    (S  
+      (PP (IN In)  
+        (NP (JJ American) (NN romance) )) 
+      (, ,)  
+      (NP-SBJ-2 (RB almost) (NN nothing) ) 
+      (VP (VBZ rates)  
+        (S  
+          (NP-SBJ (-NONE- *-2) ) 
+          (ADJP-PRD  
+            (ADJP (JJR higher) ) 
+            (PP (IN than)  
+              (SBAR-NOM  
+                (WHNP-1 (WP what) ) 
+                (S  
+                  (NP-SBJ (DT the) (NN movie) (NNS men) ) 
+                  (VP (VB have)  
+                    (VP (VBN called)  
+                      (S  
+                        (NP-SBJ (-NONE- *T*-1) ) 
+                        (`` ``)  
+                        (S-NOM-PRD  
+                          (NP-SBJ (-NONE- *) ) 
+                          (VP (NN meeting)  
+                            (NP (JJ cute) ))) 
+                        ('' '') ))))))))))));
+			]]>
+			</programlisting>
+			<para>The Salt document graph is searched for tokens and hirearchical dominance relations above these. The tree of dominance relations is realized as a nested
+				bracket structure, as shown above. Tokens (i.e. word forms) are found in the inner-most brackets
+				aligned with the closing bracket to the right. Their part-of-speech tag is aligned to the left, e.g. in the token "(VB have)", which stands for the word "have", with 
+				the part-of-speech "VB". 
+			</para>
+			<para>In some PTB style corpora, node 'functions' are designated after a separator in the node name, and these may optionally be interprested as edge labels. For example,
+				in "(NP-SBJ" above, the segment "-SBJ" signifies that this node is the subject of the sentence. This part of the node label can be generated from a specified edge annotation
+				for the incoming edge with a specified separator (the '-' in this example; see <xref endterm="ptb_exporter_properties" linkend="ptb_exporter_properties"/> below).
+			</para>
+			<para>Some corpora use a different notation for tokens, where they are not bracketed and the word form precedes the part-of-speech, which is separated by a slash (a.k.a. "atis-style"). For example:</para>
+			<programlisting>(NP two/CD friends/NNS )</programlisting>
+			<para>This PTB 'dialect' is also supported, and generation of such tokens can be switched on or off using the <xref endterm="ptb_exporter_properties" linkend="ptb_exporter_properties"/> below </para>
+			
+		</sect1>
+		<sect1>
+			<title xml:id="ptb_exporter_properties">Properties</title>
+			<para>The table <xref linkend="exporter_prop_overview"/> contains an 
+				overview of all usable properties to customize the behaviour of this 
+				Pepper module. The following section contains a description of 
+				each property and describes the resulting differences in the 
+				mapping to the Salt model.</para>
+			<table frame="all" xml:id="exporter_prop_overview">
+				<title>Properties to customize exporter behaviour</title>
+				<tgroup align="left" cols="4" colsep="1" rowsep="1">
+					<thead>
+						<row>
+							<entry>Name of property</entry>
+							<entry>Type of property</entry>
+							<entry>optional/ mandatory</entry>
+							<entry>default value</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry><xref endterm="xnodeNamespace" linkend="xprop_prop1"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>ptb</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="xposName" linkend="xprop_prop2"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>pos</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="xcatName" linkend="xprop_prop3"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>cat</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="xedgeType" linkend="xprop_prop4"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>edge</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="xedgeAnnoSeparator" linkend="xprop_prop5"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>-</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="xedgeAnnoNamespace" linkend="xprop_prop6"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>ptb</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="xedgeAnnoName" linkend="xprop_prop7"/></entry>
+							<entry>String</entry>
+							<entry>optional</entry>
+							<entry>func</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="xexportEdgeAnnos" linkend="xprop_prop8"/></entry>
+							<entry>Boolean</entry>
+							<entry>optional</entry>
+							<entry>true</entry>
+						</row>	
+						<row>
+							<entry><xref endterm="xhandleSlashTokens" linkend="xprop_prop9"/></entry>
+							<entry>Boolean</entry>
+							<entry>optional</entry>
+							<entry>false</entry>
+						</row>	
+					</tbody>
+				</tgroup>
+			</table>
+			<sect2 xml:id="xprop_prop1">
+				<title xml:id="xnodeNamespace">
+					nodeNamespace</title>
+				<para><code>nodeNamespace=ptb</code></para>
+				<para>Name of namespace for nodes to export and their annotations, e.g. 'ptb'. Only nodes within this layer name in Salt will be exported.</para>
+			</sect2>
+			<sect2 xml:id="xprop_prop2">
+				<title xml:id="xposName">
+					posName</title>
+				<para><code>posName=pos</code></para>
+				<para>Name of pos annotation name for tokens, e.g. 'pos'. Only this annotation name will be taken to generate pos labels for the tokens.</para>
+			</sect2>
+			<sect2 xml:id="xprop_prop3">
+				<title xml:id="xcatName">
+					catName</title>
+				<para><code>catName=cat</code></para>
+				<para>Name of category annotation for non-terminal nodes to be exported, e.g. 'cat'. Only this annotation name will be taken to generate non-terminal node lables.</para>
+			</sect2>
+			<sect2 xml:id="xprop_prop4">
+				<title xml:id="xedgeType">
+					edgeType</title>
+				<para><code>edgeType=edge</code></para>
+				<para>Name of edge type for dominance edges to be exported, e.g. 'edge'. Only this edge type will be taken to generate the PTB bracket structure.</para>
+			</sect2>
+			<sect2 xml:id="xprop_prop5">
+				<title xml:id="xedgeAnnoSeparator">
+					edgeAnnoSeparator</title>
+				<para><code>edgeAnnoSeparator=-</code></para>
+				<para>Separator character for edge labels following node annotation, e.g. the '-' in (NP-subj (....</para>
+			</sect2>
+			<sect2 xml:id="xprop_prop6">
+				<title xml:id="xedgeAnnoNamespace">
+					edgeAnnoNamespace</title>
+				<para><code>edgeAnnoNamespace=ptb</code></para>
+				<para>Namespace for edge annotations to be exported (represented within a node label after a separator), e.g. 'ptb'.</para>
+			</sect2>
+			<sect2 xml:id="xprop_prop7">
+				<title xml:id="xedgeAnnoName">
+					edgeAnnoName</title>
+				<para><code>edgeAnnoName=func</code></para>
+				<para>Name of dominance edge annotation name to be exported, e.g. 'func'.</para>
+			</sect2>
+			<sect2 xml:id="xprop_prop8">
+				<title xml:id="xexportEdgeAnnos">
+					nodeNamespace</title>
+				<para><code>exportEdgeAnnos=true</code></para>
+				<para>Boolean, whether to output edge annotations after a separator.</para>
+			</sect2>
+			<sect2 xml:id="xprop_prop9">
+				<title xml:id="xhandleSlashTokens">
+					handleSlashTokens</title>
+				<para><code>handleSlashTokens=false</code></para>
+				<para>Boolean, whether to create Penn atis-style tokens, which are non bracketed and separate the pos tag with a slash, e.g.: (NP two/CD friends/NNS ).</para>
 			</sect2>
 		</sect1>
 	</chapter>
