@@ -28,13 +28,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperImporterImpl;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBExporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterMapper;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperImporterTest;
+import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterMapper;
+import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterProperties;
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 
 public class PTBImporterTest extends PepperImporterTest{
 
