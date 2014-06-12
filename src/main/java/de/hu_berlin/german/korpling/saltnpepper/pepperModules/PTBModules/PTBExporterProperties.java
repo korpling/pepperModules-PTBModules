@@ -73,7 +73,7 @@ public static final String PREFIX="ptb.Exporter.";
 		this.addProperty(new PepperModuleProperty<String>(PROP_EDGEANNONAME, String.class, "Name of dominance edge annotation name to be exported, e.g. 'func'.","func", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_EDGEANNONAMESPACE, String.class, "Namespace for edge annotations to be exported (represented within a node label after a separator), e.g. 'ptb'.", "ptb" ,false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_EDGEANNOSEPARATOR, String.class, "Separator character for edge labels following node annotation, e.g. the '-' in (NP-subj (....","-", false));
-		this.addProperty(new PepperModuleProperty<Boolean>(PROP_HANDLESLASHTOKENS, Boolean.class, "Boolean, whether to create Penn atis-style tokens, which are non bracketed and separate the pos tag with a slash, e.g.: (NP two/CD friends/NNS ).", true, false));
+		this.addProperty(new PepperModuleProperty<Boolean>(PROP_HANDLESLASHTOKENS, Boolean.class, "Boolean, whether to create Penn atis-style tokens, which are non bracketed and separate the pos tag with a slash, e.g.: (NP two/CD friends/NNS ).", false, false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_NODENAMESPACE, String.class, "Name of namespace for nodes to export and their annotations, e.g. 'ptb'.","ptb", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_POSNAME, String.class, "Name of pos annotation name for tokens, e.g. 'pos'.", "pos", false));
 
