@@ -285,6 +285,5 @@
   </build>
   <scm>
     <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/trunk/</developerConnection>
-    <url>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/</url>
   </scm>
 </project>
