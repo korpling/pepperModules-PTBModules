@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>pepperModules-PTBModules</artifactId>
   <name>${project.groupId}.${project.artifactId}</name>
-  <version>1.0.2</version>
+  <version>1.0.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <properties>
   	<maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
@@ -24,7 +24,8 @@
     </repository>
   </distributionManagement>
     <scm>
-    <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/tags/pepperModules-PTBModules-1.0.2</developerConnection>
+    <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/trunk/</developerConnection>
+    <url>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/pepper/tags/pepper-2.0.0/pepper-parentModule/pepperModules-PTBModules</url>
   </scm>
   <repositories>
     <repository>
