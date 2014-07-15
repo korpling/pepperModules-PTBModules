@@ -296,7 +296,7 @@
   </build>
 
   <scm>
-    <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/tags/pepperModules-PTBModules-1.0.0</developerConnection>
-    <url>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/tags/pepperModules-PTBModules-1.0.0</url>
+    <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/tags/</developerConnection>
+    <url>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/tags/</url>
   </scm>
 </project>
