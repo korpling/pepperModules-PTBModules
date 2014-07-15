@@ -23,6 +23,9 @@
       <!-- <url>scpexe://korpling.german.hu-berlin.de/srv/www/maven2/</url>-->
     </repository>
   </distributionManagement>
+    <scm>
+    <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/trunk/</developerConnection>
+  </scm>
   <repositories>
     <repository>
       <id>korpling</id>
@@ -283,7 +286,4 @@
       <!-- end of docbook plugin -->
     </plugins>
   </build>
-  <scm>
-    <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/PTBModules/trunk/</developerConnection>
-  </scm>
 </project>
