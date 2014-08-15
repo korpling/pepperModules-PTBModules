@@ -125,7 +125,6 @@ public class PTBImporterMapperTest{
 		getFixture().setResourceURI(URI.createFileURI("./src/test/resources/atis3_mini.mrg"));
 		
 		getFixture().mapSDocument();
-		//System.out.println(getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
 		
 		//Check number of texts
 		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
