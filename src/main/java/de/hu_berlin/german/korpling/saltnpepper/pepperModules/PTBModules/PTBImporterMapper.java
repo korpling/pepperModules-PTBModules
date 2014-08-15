@@ -51,7 +51,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 	// Declare Salt Objects
 	private StringBuilder stbText = new StringBuilder();
 	private STextualDS txtText = null;
-	private SLayer lyrPTB = SaltFactory.eINSTANCE.createSLayer();
+	private SLayer lyrPTB = null;
 
 	// Other globals
 	private Stack<Vector<SNode>> stNodeVectors = new Stack<Vector<SNode>>();
@@ -95,14 +95,16 @@ public class PTBImporterMapper extends PepperMapperImpl {
 	 */
 	@Override
 	public DOCUMENT_STATUS mapSDocument() {
-
 		getSettings();
-		lyrPTB.setSName(strNamespace);
-
 		if (getSDocument().getSDocumentGraph() == null) {
 			getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
 		}
-
+		
+		//create SLayer and add it to SDocumentGraph
+		lyrPTB= SaltFactory.eINSTANCE.createSLayer();
+		lyrPTB.setSName(strNamespace);
+		getSDocument().getSDocumentGraph().addSLayer(lyrPTB);
+		
 		txtText = getSDocument().getSDocumentGraph().createSTextualDS("");
 
 		BufferedReader br = null;
@@ -131,7 +133,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 						line = line.replaceAll("(?<= )([^ \\(\\)]+)/([^ \\(\\)]+)(?= )", "($2 $1)");
 
 					}
-
+					System.out.println(">>>>>>>> line: "+ line);
 					mapSentence(line);
 					strValidate = br.readLine();
 					if (strValidate == null) {
@@ -206,7 +208,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 			if (strSingleNode.startsWith("(")) {
 				strSingleNode = strSingleNode.substring(1);
 			}
-			if (!strSingleNode.equals(")") && !strSingleNode.equals(" ") && !strSingleNode.equals("")) {
+			if (!")".equals(strSingleNode) && !" ".equals(strSingleNode) && !strSingleNode.isEmpty()) {
 				if (strSingleNode.length() > strSingleNode.replace(" ", "").length()) {
 					// this node is a token
 					// this is the pos tag
@@ -223,7 +225,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 
 					// create SToken node covering the strTok position
 					SToken tokCurrentToken = getSDocument().getSDocumentGraph().createSToken(txtText, intTokStartChar, intTokEndChar);
-
+		
 					// annotate the SToken with pos=strPos
 					tokCurrentToken.createSAnnotation(strNamespace, strPosName, strPos);
 					nodCurrentNode = tokCurrentToken;
