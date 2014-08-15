@@ -118,6 +118,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 			// every line should start with a '(', otherwise ignore it
 			while (!(strValidate.trim().startsWith("("))) {
 				strValidate = br.readLine();
+				System.out.println("read line: "+ strValidate);
 			}
 
 			line = strValidate;
@@ -127,6 +128,9 @@ public class PTBImporterMapper extends PepperMapperImpl {
 				if (CountInString(line, "(") == CountInString(line, ")")) {
 					// sentence is complete
 					// line = line.replaceAll("([^ ])\\(", "'$1' (");
+					
+					System.out.println("line BEFORE: "+ line);
+					
 					if (bolHandleSlashTokens) {
 						// line =
 						// line.replaceAll(" ([^ /]+)/([^ ]+) "," ('$1' '$2') ");

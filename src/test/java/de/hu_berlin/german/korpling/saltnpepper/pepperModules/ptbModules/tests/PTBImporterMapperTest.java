@@ -165,8 +165,8 @@ public class PTBImporterMapperTest{
 	 * Checks that even output from Stanford parser is parsable. Stanford produces partly entire sentences in one line.
 	 * @throws IOException 
 	 */
-//	@Test
-//	public void test_stanford_output() throws IOException{
+	@Test
+	public void test_stanford_output() throws IOException{
 //		String input= "# D:\\stanford-tregex-2013-06-20\\mag-editorial\\c_m_ed_bjr_001.txt.prd_705_705_18_694:\n"+
 //			"328: (NP (PRP$ their) (NN development))\n"+
 //			"\n"+
@@ -175,33 +175,46 @@ public class PTBImporterMapperTest{
 //			"  (NP (NNP China) (POS 's))\n"+
 //			"  (ADJP (JJ sustainable))\n"+
 //			"  (NN development))\n";
-//		
-//		File tmpFolder= PepperModuleTest.getTempPath_static("ptbImporter");
-//		File flTemp = new File(tmpFolder.getAbsolutePath() + "testStandardDialect.txt");
-//		FileWriter flwTemp = new FileWriter(flTemp);
-//		try{
-//			flwTemp.write(input);
-//			flwTemp.flush();
-//		}finally{
-//			flwTemp.close();
-//		}
-//		getFixture().setResourceURI(URI.createFileURI(flTemp.getAbsolutePath()));
-//		
-//		getFixture().mapSDocument();
-//		//Salt2DOT salt2dot= new Salt2DOT();
-//		//salt2dot.salt2Dot(getFixture().getSDocument().getSDocumentGraph(), URI.createFileURI("D:/dot_out.dot"));
-//		
-//		//Check number of texts
-//		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
-//		//Check text is identical
-//		assertEquals("In American romance , almost nothing rates *-2 higher than what the movie men have called *T*-1 `` * meeting cute '' ", getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
-//		//Count number of tokens
-//		assertEquals(22, getFixture().getSDocument().getSDocumentGraph().getSTokens().size());
-//		//Count number of nodes
-//		assertEquals(23, getFixture().getSDocument().getSDocumentGraph().getSStructures().size());
-//		//Check first token is annotated as IN
-//		assertEquals("IN", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0).getSAnnotation("ptb::pos").getSValue());
-//
-//	}
+		
+		String input= "# D:\\stanford-tregex-2013-06-20\\mag-editorial\\c_m_ed_bjr_001.txt.prd_705_705_18_694:\n"+
+				"(NP (PRP$ their) (NN development))\n"+
+				"\n"+
+				"# D:\\stanford-tregex-2013-06-20\\mag-editorial\\c_m_ed_bjr_002.txt.prd_574_577_16_566:\n"+
+				"(NP\n"+
+				"  (NP (NNP China) (POS 's))\n"+
+				"  (ADJP (JJ sustainable))\n"+
+				"  (NN development))\n";
+		
+		File tmpFolder= PepperModuleTest.getTempPath_static("ptbImporter");
+		File flTemp = new File(tmpFolder.getAbsolutePath() + "stanfordOutput.txt");
+		FileWriter flwTemp = new FileWriter(flTemp);
+		try{
+			flwTemp.write(input);
+			flwTemp.flush();
+		}finally{
+			flwTemp.close();
+		}
+		getFixture().setResourceURI(URI.createFileURI(flTemp.getAbsolutePath()));
+		
+		getFixture().mapSDocument();
+		
+		//Check number of texts
+		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
+		//Check text is identical
+		assertEquals("their development China 's sustainable development ", getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		//Count number of tokens
+		assertEquals(6, getFixture().getSDocument().getSDocumentGraph().getSTokens().size());
+		//Count number of nodes
+		assertEquals(4, getFixture().getSDocument().getSDocumentGraph().getSStructures().size());
+		//Check first token is annotated as IN
+		assertEquals("PRP$", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0).getSAnnotation("ptb::pos").getSValue());
+		assertEquals("NN", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1).getSAnnotation("ptb::pos").getSValue());
+		assertEquals("NNP", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2).getSAnnotation("ptb::pos").getSValue());
+		assertEquals("POS", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3).getSAnnotation("ptb::pos").getSValue());
+		assertEquals("JJ", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4).getSAnnotation("ptb::pos").getSValue());
+		assertEquals("NN", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(5).getSAnnotation("ptb::pos").getSValue());
+		
+
+	}
 
 }
