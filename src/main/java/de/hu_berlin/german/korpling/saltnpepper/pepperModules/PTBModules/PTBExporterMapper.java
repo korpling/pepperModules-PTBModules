@@ -17,7 +17,6 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,157 +33,156 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
 public class PTBExporterMapper extends PepperMapperImpl implements SGraphTraverseHandler {
-	
-	public StringBuilder stbOutput= new StringBuilder();
-	
-	//manage settings
-	private String strNamespace ; 
-	private String strPosName ;
-	private String strCatName ; 
-	private String strEdgeType; 
-	private String strEdgeAnnoSeparator; 
-	private String strEdgeAnnoNameSpace; 
-	private String strEdgeAnnoName; 
-	private Boolean bolEdgeAnnos; 
-	private Boolean bolHandleSlashTokens; 
-	
+
+	public StringBuilder stbOutput = new StringBuilder();
+
+	// manage settings
+	private String strNamespace;
+	private String strPosName;
+	private String strCatName;
+	private String strEdgeAnnoSeparator;
+	private String strEdgeAnnoName;
+	private Boolean bolEdgeAnnos;
+	private Boolean bolHandleSlashTokens;
+
+	/**
+	 * Called by the Pepper framework to start the mapping for one
+	 * document-structure.
+	 */
 	@Override
 	public DOCUMENT_STATUS mapSDocument() {
-		
-		if (getSDocument() != null && getSDocument().getSDocumentGraph() !=null ) {
+
+		if (getSDocument() != null && getSDocument().getSDocumentGraph() != null) {
 			// initializes setting variables (see above)
 			getSettings();
-			// traverses the document-structure (this is a call back and will invoke #checkConstraint, #nodeReached and #nodeLeft())
+			// traverses the document-structure (this is a call back and will
+			// invoke #checkConstraint, #nodeReached and #nodeLeft())
 			getSDocument().getSDocumentGraph().traverse(getSDocument().getSDocumentGraph().getSRoots(), GRAPH_TRAVERSE_TYPE.TOP_DOWN_DEPTH_FIRST, "TraverseTrees", this);
-			
+
 			File outputFile = new File(getResourceURI().toFileString());
-			if (	(!outputFile.isDirectory())&&
-					(!outputFile.getParentFile().exists())){
+			if ((!outputFile.isDirectory()) && (!outputFile.getParentFile().exists())) {
 				outputFile.getParentFile().mkdirs();
 			}
 			FileWriter flwTemp = null;
-			try{
-				flwTemp= new FileWriter(outputFile);
+			try {
+				flwTemp = new FileWriter(outputFile);
 				flwTemp.write(stbOutput.toString());
 				flwTemp.flush();
-			}catch(IOException e){
-				throw new PepperModuleException(this, "Unable to write output file for PTB export '"+getResourceURI()+"'.",e);
-			}
-			finally{
+			} catch (IOException e) {
+				throw new PepperModuleException(this, "Unable to write output file for PTB export '" + getResourceURI() + "'.", e);
+			} finally {
 				try {
-					if (flwTemp!= null){
+					if (flwTemp != null) {
 						flwTemp.close();
 					}
 				} catch (IOException e) {
-					throw new PepperModuleException(this, "Unable to close output file writer for PTB export '"+getResourceURI()+"'.",e);
+					throw new PepperModuleException(this, "Unable to close output file writer for PTB export '" + getResourceURI() + "'.", e);
 				}
 			}
-			
-			
+
 		}
-		
-		return(DOCUMENT_STATUS.COMPLETED);			
+
+		return (DOCUMENT_STATUS.COMPLETED);
 
 	}
-	
+
 	/**
-	 * Check constraints: only process this subtree if the current node is a root or if it has an incoming {@link SDominanceRelation}
-	 * If the user has defined the {@link PTBExporterProperties#PROP_NODENAMESPACE}, also check that the node is in a layer
-	 * corresponding to the defined namespace value.
+	 * Check constraints: only process this subtree if the current node is a
+	 * root or if it has an incoming {@link SDominanceRelation} If the user has
+	 * defined the {@link PTBExporterProperties#PROP_NODENAMESPACE}, also check
+	 * that the node is in a layer corresponding to the defined namespace value.
 	 */
 	@Override
-	public boolean checkConstraint(GRAPH_TRAVERSE_TYPE trvTraverseType, String strTraverseName,
-			SRelation relCurrentRelation, SNode nodCurrentNode, long lngChildNumber) {		
+	public boolean checkConstraint(GRAPH_TRAVERSE_TYPE trvTraverseType, String strTraverseName, SRelation relCurrentRelation, SNode nodCurrentNode, long lngChildNumber) {
 
-	
-	boolean bolFoundNamespace = false; //Stores matching user defined namespace as soon as a corresponding layer is found
-	
-	if(relCurrentRelation==null || relCurrentRelation instanceof SDominanceRelation) //if this node is a root or it has an incoming dominance relationship
+		// Stores matching user defined namespace as soon as a corresponding
+		// layer is found
+		boolean bolFoundNamespace = false;
+
+		if (relCurrentRelation == null || relCurrentRelation instanceof SDominanceRelation)
+		// if this node is a root or it has an incoming dominance relationship
 		{
 			if (strNamespace != null && !strNamespace.isEmpty()) {
-				for (SLayer sLayer: nodCurrentNode.getSLayers()){ 
-					//iterate through layers of this node to find user defined namespace setting
-					if( sLayer.getSName().equals(strNamespace)){ 
-						bolFoundNamespace = true; //found matching namespace, done searching layers
+				for (SLayer sLayer : nodCurrentNode.getSLayers()) {
+					// iterate through layers of this node to find user defined
+					// namespace setting
+					if (sLayer.getSName().equals(strNamespace)) {
+						bolFoundNamespace = true; // found matching namespace,
+													// done searching layers
 						break;
-					}
-					else
-					{
+					} else {
 						bolFoundNamespace = false;
 					}
 				}
-			}
-			else
-			{
+			} else {
 				return true;
 			}
-		}	
-	else
-		{	
+		} else {
 			return false;
 		}
-		
-	
-	return bolFoundNamespace;
-	
+
+		return bolFoundNamespace;
+
 	}
-	
+
 	@Override
-	public void nodeLeft(GRAPH_TRAVERSE_TYPE trvTraverseType, String strTraverseName, SNode nodCurrentNode,
-			SRelation relCurrentRelation, SNode nodPrevNode, long lngChildNumber) {
-		if (!(nodCurrentNode instanceof SToken)){//leaving a non-terminal, close the bracket
+	public void nodeLeft(GRAPH_TRAVERSE_TYPE trvTraverseType, String strTraverseName, SNode nodCurrentNode, SRelation relCurrentRelation, SNode nodPrevNode, long lngChildNumber) {
+		// leaving a non-terminal, close the bracket
+		if (!(nodCurrentNode instanceof SToken)) {
 			stbOutput.append(") ");
 		}
-		if (relCurrentRelation == null) {//leaving a root, sentence is complete
+		// leaving a root, sentence is complete
+		if (relCurrentRelation == null) {
 			stbOutput.append("\n");
 		}
 	}
-	
+
 	@Override
-	public void nodeReached(GRAPH_TRAVERSE_TYPE trvTraverseType, String strTraverseName, SNode nodCurrentNode,
-			SRelation relCurrentRelation, SNode nodPrevNode, long lngChildNumber) {
-		
+	public void nodeReached(GRAPH_TRAVERSE_TYPE trvTraverseType, String strTraverseName, SNode nodCurrentNode, SRelation relCurrentRelation, SNode nodPrevNode, long lngChildNumber) {
+
 		String strAnnoOut;
 		String strTokenOut;
-		
-		if (nodCurrentNode instanceof SToken) //this is a token
-		{
+		// this is a token
+		if (nodCurrentNode instanceof SToken) {
 			strTokenOut = ((SToken) nodCurrentNode).getSDocumentGraph().getSText(nodCurrentNode);
-			if (nodCurrentNode.getSAnnotation(strPosName) != null) {//there is a pos tag
+			// there is a pos tag
+			if (nodCurrentNode.getSAnnotation(strPosName) != null) {
 				strAnnoOut = nodCurrentNode.getSAnnotation(strPosName).getSValueSTEXT();
-				if (bolHandleSlashTokens == false) { //normal style pos notation
-					stbOutput.append(" (" + strAnnoOut + " " +strTokenOut +") ");
+
+				if (bolHandleSlashTokens == false) {
+					// normal style pos notation
+					stbOutput.append(" (" + strAnnoOut + " " + strTokenOut + ") ");
+				} else {
+					// atis style pos notation with slash
+					stbOutput.append(" " + strTokenOut + "/" + strAnnoOut + " ");
 				}
-				else //atis style pos notation with slash
-				{
-					stbOutput.append(" " + strTokenOut + "/" + strAnnoOut +" ");				
-				}
+			} else {
+				stbOutput.append("( " + strTokenOut + " )");
 			}
-			else
-			{
-				stbOutput.append("( " + strTokenOut +" )");
-			}
-		}
-		else if (nodCurrentNode.getSAnnotation(strCatName) != null) { //This node has a cat annotation
+		} else if (nodCurrentNode.getSAnnotation(strCatName) != null) {
+			// This node has a cat annotation
 			strAnnoOut = nodCurrentNode.getSAnnotation(strCatName).getSValueSTEXT();
-			if (bolEdgeAnnos == true) {//output edge annotations if available
-				if (relCurrentRelation.getSAnnotation(strEdgeAnnoName) != null){ //edge annotation found
+			if (bolEdgeAnnos == true) {
+				// output edge annotations if available
+				if (relCurrentRelation.getSAnnotation(strEdgeAnnoName) != null) {
+					// edge annotation found
 					strAnnoOut += strEdgeAnnoSeparator + relCurrentRelation.getSAnnotation(strEdgeAnnoName).getSValueSTEXT();
 				}
 			}
-			stbOutput.append(" ("+strAnnoOut);
-		}	
+			stbOutput.append(" (" + strAnnoOut);
+		}
 	}
-	
-	private void getSettings(){
-		strNamespace = ((PTBExporterProperties) this.getProperties()).getNodeNamespace(); 
+
+	/**
+	 * Reads the propery object and maps its contend to several variables.
+	 */
+	private void getSettings() {
+		strNamespace = ((PTBExporterProperties) this.getProperties()).getNodeNamespace();
 		strPosName = ((PTBExporterProperties) this.getProperties()).getPosName();
 		strCatName = ((PTBExporterProperties) this.getProperties()).getCatName();
-		strEdgeType = ((PTBExporterProperties) this.getProperties()).getEdgeType();
 		strEdgeAnnoSeparator = ((PTBExporterProperties) this.getProperties()).getEdgeAnnoSeparator();
-		strEdgeAnnoNameSpace = ((PTBExporterProperties) this.getProperties()).getEdgeAnnoNamespace();
 		strEdgeAnnoName = ((PTBExporterProperties) this.getProperties()).getEdgeAnnoName();
 		bolEdgeAnnos = ((PTBExporterProperties) this.getProperties()).getImportEdgeAnnos();
 		bolHandleSlashTokens = ((PTBExporterProperties) this.getProperties()).getHandleSlashTokens();
-	}	
+	}
 }
