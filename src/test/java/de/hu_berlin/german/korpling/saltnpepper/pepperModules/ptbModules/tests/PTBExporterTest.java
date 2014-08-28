@@ -27,7 +27,7 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperExpor
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBExporter;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltSample.SaltSample;
+import de.hu_berlin.german.korpling.saltnpepper.salt.samples.SampleGenerator;
 
 public class PTBExporterTest extends PepperExporterTest {
 
@@ -44,14 +44,14 @@ public class PTBExporterTest extends PepperExporterTest {
 	
 	@Test
 	public void testExportPureSyntax() {
-		//SaltSample.createCorpusStructure(getFixture().getSaltProject());
+		//SampleGenerator.createCorpusStructure(getFixture().getSaltProject());
 		getFixture().getSaltProject().getSCorpusGraphs().add(SaltFactory.eINSTANCE.createSCorpusGraph());
 		SDocument docMyDocument = getFixture().getSaltProject().getSCorpusGraphs().get(0).createSDocument(URI.createURI("mycorpus/doc1"));
 		docMyDocument.setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
-		SaltSample.createPrimaryData(docMyDocument);
-		SaltSample.createTokens2(docMyDocument);
-		SaltSample.createSyntaxStructure2(docMyDocument);
-		SaltSample.createSyntaxAnnotations2(docMyDocument);
+		SampleGenerator.createPrimaryData(docMyDocument);
+		SampleGenerator.createTokens(docMyDocument);
+		SampleGenerator.createSyntaxStructure(docMyDocument);
+		SampleGenerator.createSyntaxAnnotations(docMyDocument);
 		CorpusDesc corpusDesc= new CorpusDesc();
 		corpusDesc.setCorpusPath(URI.createURI(getTempPath("ptbTest").toString()));
 		getFixture().setCorpusDesc(corpusDesc);
