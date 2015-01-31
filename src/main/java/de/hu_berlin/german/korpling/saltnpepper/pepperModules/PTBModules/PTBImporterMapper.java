@@ -18,9 +18,11 @@
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -107,6 +109,15 @@ public class PTBImporterMapper extends PepperMapperImpl {
 		
 		txtText = getSDocument().getSDocumentGraph().createSTextualDS("");
 
+		LineNumberReader lnr= null;
+		try {
+			lnr = new LineNumberReader(new FileReader(new File(getResourceURI().toFileString())));
+			lnr.skip(Long.MAX_VALUE);
+			lnr.close();
+		} catch (IOException e1) {
+			throw new PepperModuleException("Cannot read the input file " + getResourceURI().toFileString()+": "+e1.getMessage(), e1); 
+		}
+		
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(getResourceURI().toFileString()));
@@ -119,11 +130,26 @@ public class PTBImporterMapper extends PepperMapperImpl {
 			while (!(strValidate.trim().startsWith("("))) {
 				strValidate = br.readLine();
 			}
-
+			
 			line = strValidate;
 			line.trim();
-
+			//number of already read lines
+			int readline= 0;
+			boolean addProgress= false;
+			int progress=0;
 			while (strValidate != null) {
+				//compute progress
+				readline++;
+				progress= ((readline * 100/ lnr.getLineNumber())%5);
+				if (	(addProgress)&&
+						(progress==0)){
+					addProgress(0.05);
+					addProgress= false;
+				}else if (progress!= 0){
+					addProgress= true;
+				}
+				//end: compute progress
+				
 				if (CountInString(line, "(") == CountInString(line, ")")) {
 					// sentence is complete
 					// line = line.replaceAll("([^ ])\\(", "'$1' (");
@@ -131,7 +157,6 @@ public class PTBImporterMapper extends PepperMapperImpl {
 						// line =
 						// line.replaceAll(" ([^ /]+)/([^ ]+) "," ('$1' '$2') ");
 						line = line.replaceAll("(?<= )([^ \\(\\)]+)/([^ \\(\\)]+)(?= )", "($2 $1)");
-
 					}
 					mapSentence(line);
 					strValidate = br.readLine();
@@ -182,6 +207,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 			}
 		}
 		txtText.setSText(stbText.toString());
+		
 		return (DOCUMENT_STATUS.COMPLETED);
 	}
 
@@ -195,7 +221,6 @@ public class PTBImporterMapper extends PepperMapperImpl {
 	 *            sentence in PTB format
 	 */
 	public void mapSentence(String strSentence) {
-
 		if (strSentence.startsWith("( (")) {
 			// remove superfluous wrapping brackets around sentence if found
 			strSentence = strSentence.substring(2, strSentence.length() - 2);
@@ -224,7 +249,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 
 					// create SToken node covering the strTok position
 					SToken tokCurrentToken = getSDocument().getSDocumentGraph().createSToken(txtText, intTokStartChar, intTokEndChar);
-		
+
 					// annotate the SToken with pos=strPos
 					tokCurrentToken.createSAnnotation(strNamespace, strPosName, strPos);
 					nodCurrentNode = tokCurrentToken;
