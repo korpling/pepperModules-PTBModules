@@ -117,8 +117,8 @@ public class PTBImporterMapper extends PepperMapperImpl {
 			if (strValidate == null) {
 				throw new PepperModuleException("Cannot find text file to process - Input is null");
 			}
-			// every line should start with a '(', otherwise ignore it
-			while (!(strValidate.trim().startsWith("("))) {
+			// every line should start with a '(' or a ')' in case it's closing a previous bracket, otherwise ignore it
+			while (!(strValidate.trim().startsWith("(") || strValidate.trim().startsWith(")"))) {
 				strValidate = br.readLine();
 			}
 
