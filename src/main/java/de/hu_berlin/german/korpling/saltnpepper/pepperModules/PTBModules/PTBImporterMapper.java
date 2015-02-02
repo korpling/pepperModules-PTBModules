@@ -35,6 +35,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 
 public class PTBImporterMapper extends PepperMapperImpl {
 	// manage settings
@@ -109,7 +111,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new FileReader(getResourceURI().toFileString()));
+			br = new BufferedReader( new InputStreamReader(new FileInputStream(getResourceURI().toFileString()), "UTF8"));
 			String line;
 			String strValidate = br.readLine();
 			if (strValidate == null) {
@@ -186,7 +188,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 	}
 
 	/**
-	 * Seems to be the main logic to parse the ptb format. Here the given
+	 * The main logic to parse the ptb format. Here the given
 	 * <code>strSentence</code> containing just one sentence in PTB format is
 	 * parsed and mapped to Salt. The result is contained in
 	 * {@link #vecNodeList}.
