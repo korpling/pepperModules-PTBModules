@@ -222,7 +222,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 					intTokStartChar = stbText.toString().length();
 					stbText.append(strTok);
 					stbText.append(" ");
-					intTokEndChar = stbText.toString().length();
+					intTokEndChar = stbText.toString().length() - 1;
 
 					// create SToken node covering the strTok position
 					SToken tokCurrentToken = getSDocument().getSDocumentGraph().createSToken(txtText, intTokStartChar, intTokEndChar);
