@@ -72,7 +72,6 @@ public class PTBExporter extends PepperExporterImpl implements PepperExporter {
 	public PTBExporter() {
 		super();
 		this.setName("PTBExporter");
-		this.setVersion("0.0.1");
 		this.addSupportedFormat("PTB", "1.0", null);
 		this.setProperties(new PTBExporterProperties());
 		setSDocumentEnding("ptb");

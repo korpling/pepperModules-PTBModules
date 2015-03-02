@@ -69,7 +69,6 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter {
 	public PTBImporter() {
 		super();
 		this.setName("PTBImporter");
-		this.setVersion("0.0.1");
 		this.addSupportedFormat("PTB", "1.0", null);
 		this.getSDocumentEndings().add("ptb");
 		this.getSDocumentEndings().add("txt");
