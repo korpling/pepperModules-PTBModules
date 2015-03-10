@@ -68,7 +68,7 @@ or
 ### c) Use properties
 ```xml
 <importer name="PTBImporter" path="PATH_TO_CORPUS">
-  <property key="PROPERTY_NAME">PROPERTY_VALUE</key>
+  <property key="PROPERTY_NAME">PROPERTY_VALUE</property>
 </importer>
 ```
 
@@ -76,7 +76,7 @@ or
 
 ```xml
 <importer name="PTBExporter" path="PATH_TO_CORPUS">
-  <property key="PROPERTY_NAME">PROPERTY_VALUE</key>
+  <property key="PROPERTY_NAME">PROPERTY_VALUE</property>
 </importer>
 ```
 
