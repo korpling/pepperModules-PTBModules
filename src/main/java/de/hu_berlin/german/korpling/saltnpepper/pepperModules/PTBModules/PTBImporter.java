@@ -28,26 +28,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 /**
- * This is a sample {@link PepperImporter}, which can be used for creating
- * individual Importers for the Pepper Framework. Therefore you have to take a
- * look to todo's and adapt the code.
- * 
- * <ul>
- * <li>the salt model to fill, manipulate or export can be accessed via
- * {@link #getSaltProject()}</li>
- * <li>special parameters given by Pepper workflow can be accessed via
- * {@link #getSpecialParams()}</li>
- * <li>a place to store temprorary datas for processing can be accessed via
- * {@link #getTemproraries()}</li>
- * <li>a place where resources of this bundle are, can be accessed via
- * {@link #getResources()}</li>
- * <li>a logService can be accessed via {@link #getLogService()}</li>
- * </ul>
- * If this is the first time, you are implementing a Pepper module, we strongly
- * recommend, to take a look into the 'Developer's Guide for Pepper modules',
- * you will find on <a
- * href="https://korpling.german.hu-berlin.de/saltnpepper/">https
- * ://korpling.german.hu-berlin.de/saltnpepper/</a>.
+ * This importer transforms data in Penn Trebank format (ptb). to a Salt model
  * 
  * @author Amir Zeldes
  * @version 1.0
@@ -69,6 +50,9 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter {
 	public PTBImporter() {
 		super();
 		this.setName("PTBImporter");
+		setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
+		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-PTBModules"));
+		setDesc("This importer transforms data in Penn Trebank format (ptb). to a Salt model");
 		this.addSupportedFormat("PTB", "1.0", null);
 		this.getSDocumentEndings().add("ptb");
 		this.getSDocumentEndings().add("txt");
