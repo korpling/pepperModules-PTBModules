@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>pepperModules-PTBModules</artifactId>
   <name>${project.groupId}.${project.artifactId}</name>
-  <version>1.0.5-SNAPSHOT</version>
+  <version>1.0.5</version>
   <packaging>bundle</packaging>
   <distributionManagement>
     <repository>
@@ -36,7 +36,7 @@
   </ciManagement>
   <inceptionYear>2013</inceptionYear>
   <organization>
-    <name>Humboldt-Universit&#228;t zu Berlin</name>
+    <name>Humboldt-Universität zu Berlin</name>
   </organization>
   <build>
     <plugins>
