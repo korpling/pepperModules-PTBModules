@@ -43,13 +43,13 @@ public class PTBImporterProperties extends PepperModuleProperties {
 	 */
 	public static final String PROP_EDGETYPE = PREFIX + "relationType";
 	/**
-	 * Separator character for relation labels following node annotation, e.g. the
-	 * '-' in (NP-subj (....
+	 * Separator character for relation labels following node annotation, e.g.
+	 * the '-' in (NP-subj (....
 	 */
 	public static final String PROP_EDGEANNOSEPARATOR = PREFIX + "relationAnnoSeparator";
 	/**
-	 * Namespace for PTB relation annotations (represented within a node label after
-	 * a separator), e.g. 'ptb'.
+	 * Namespace for PTB relation annotations (represented within a node label
+	 * after a separator), e.g. 'ptb'.
 	 */
 	public static final String PROP_EDGEANNONAMESPACE = PREFIX + "relationAnnoNamespace";
 	/**

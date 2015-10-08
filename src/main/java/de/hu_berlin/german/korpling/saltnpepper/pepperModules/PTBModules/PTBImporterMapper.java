@@ -105,12 +105,12 @@ public class PTBImporterMapper extends PepperMapperImpl {
 		if (getDocument().getDocumentGraph() == null) {
 			getDocument().setDocumentGraph(SaltFactory.createSDocumentGraph());
 		}
-		
+
 		// create SLayer and add it to SDocumentGraph
 		lyrPTB = SaltFactory.createSLayer();
 		lyrPTB.setName(strNamespace);
 		getDocument().getDocumentGraph().addLayer(lyrPTB);
-		
+
 		txtText = getDocument().getDocumentGraph().createTextualDS("");
 
 		LineNumberReader lnr = null;
@@ -124,13 +124,14 @@ public class PTBImporterMapper extends PepperMapperImpl {
 
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader( new InputStreamReader(new FileInputStream(getResourceURI().toFileString()), "UTF8"));
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(getResourceURI().toFileString()), "UTF8"));
 			String line;
 			String strValidate = br.readLine();
 			if (strValidate == null) {
 				throw new PepperModuleException("Cannot find text file to process - Input is null");
 			}
-			// every line should start with a '(' or a ')' in case it's closing a previous bracket, otherwise ignore it
+			// every line should start with a '(' or a ')' in case it's closing
+			// a previous bracket, otherwise ignore it
 			while (!(strValidate.trim().startsWith("(") || strValidate.trim().startsWith(")"))) {
 				strValidate = br.readLine();
 			}
@@ -252,7 +253,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 
 					// create SToken node covering the strTok position
 					SToken tokCurrentToken = getDocument().getDocumentGraph().createToken(txtText, intTokStartChar, intTokEndChar);
-		
+
 					// annotate the SToken with pos=strPos
 					tokCurrentToken.createAnnotation(strNamespace, strPosName, strPos);
 					nodCurrentNode = tokCurrentToken;
@@ -265,7 +266,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 					nodCurrentNode = SaltFactory.createSStructure();
 					getDocument().getDocumentGraph().addNode(nodCurrentNode);
 					nodCurrentNode.addLayer(lyrPTB);
-					
+
 					// annotate the new SNode with cat=strNode
 					nodCurrentNode.createAnnotation(strNamespace, strCatName, strNode.trim());
 				}
@@ -294,7 +295,8 @@ public class PTBImporterMapper extends PepperMapperImpl {
 
 							for (SNode nodChild : vecNodeList) {
 								if (!(nodCurrentNode instanceof SStructure)) {
-									// do not attempt to create a dominance relation
+									// do not attempt to create a dominance
+									// relation
 									// if the parent is a token
 								} else {
 									SDominanceRelation domCurrentDom = SaltFactory.createSDominanceRelation();

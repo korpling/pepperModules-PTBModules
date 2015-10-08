@@ -32,19 +32,19 @@ import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBExpo
 public class PTBExporterTest extends PepperExporterTest {
 
 	@Before
-	public void setUp(){		
+	public void setUp() {
 		setFixture(new PTBExporter());
 		getFixture().setSaltProject(SaltFactory.createSaltProject());
-		//set formats to support
-		FormatDesc formatDef= new FormatDesc();
+		// set formats to support
+		FormatDesc formatDef = new FormatDesc();
 		formatDef.setFormatName("PTB");
 		formatDef.setFormatVersion("1.0");
 		this.supportedFormatsCheck.add(formatDef);
 	}
-	
+
 	@Test
 	public void testExportPureSyntax() {
-		//SampleGenerator.createCorpusStructure(getFixture().getSaltProject());
+		// SampleGenerator.createCorpusStructure(getFixture().getSaltProject());
 		getFixture().getSaltProject().addCorpusGraph(SaltFactory.createSCorpusGraph());
 		SDocument docMyDocument = getFixture().getSaltProject().getCorpusGraphs().get(0).createDocument(URI.createURI("mycorpus/doc1"));
 		docMyDocument.setDocumentGraph(SaltFactory.createSDocumentGraph());
@@ -52,7 +52,7 @@ public class PTBExporterTest extends PepperExporterTest {
 		SampleGenerator.createTokens(docMyDocument);
 		SampleGenerator.createSyntaxStructure(docMyDocument);
 		SampleGenerator.createSyntaxAnnotations(docMyDocument);
-		CorpusDesc corpusDesc= new CorpusDesc();
+		CorpusDesc corpusDesc = new CorpusDesc();
 		corpusDesc.setCorpusPath(URI.createURI(getTempPath("ptbTest").toString()));
 		getFixture().setCorpusDesc(corpusDesc);
 		this.start();

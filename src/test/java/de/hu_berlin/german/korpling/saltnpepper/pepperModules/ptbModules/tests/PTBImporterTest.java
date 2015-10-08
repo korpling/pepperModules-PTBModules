@@ -24,13 +24,13 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperImporterTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporter;
 
-public class PTBImporterTest extends PepperImporterTest{
+public class PTBImporterTest extends PepperImporterTest {
 	@Before
-	public void setUp() {		
+	public void setUp() {
 		setFixture(new PTBImporter());
 		getFixture().setSaltProject(SaltFactory.createSaltProject());
-		//set formats to support
-		FormatDesc formatDef= new FormatDesc();
+		// set formats to support
+		FormatDesc formatDef = new FormatDesc();
 		formatDef.setFormatName("PTB");
 		formatDef.setFormatVersion("1.0");
 		this.supportedFormatsCheck.add(formatDef);

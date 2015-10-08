@@ -59,14 +59,14 @@ public class PTBExporterMapper extends PepperMapperImpl implements GraphTraverse
 			// traverses the document-structure (this is a call back and will
 			// invoke #checkConstraint, #nodeReached and #nodeLeft())
 			getDocument().getDocumentGraph().traverse(getDocument().getDocumentGraph().getRoots(), GRAPH_TRAVERSE_TYPE.TOP_DOWN_DEPTH_FIRST, "TraverseTrees", this);
-			
+
 			File outputFile = null;
-			if (getResourceURI().toFileString()!= null){
-				outputFile= new File(getResourceURI().toFileString());
-			}else{
-				outputFile= new File(getResourceURI().toString());
+			if (getResourceURI().toFileString() != null) {
+				outputFile = new File(getResourceURI().toFileString());
+			} else {
+				outputFile = new File(getResourceURI().toString());
 			}
-			
+
 			if ((!outputFile.isDirectory()) && (!outputFile.getParentFile().exists())) {
 				outputFile.getParentFile().mkdirs();
 			}
