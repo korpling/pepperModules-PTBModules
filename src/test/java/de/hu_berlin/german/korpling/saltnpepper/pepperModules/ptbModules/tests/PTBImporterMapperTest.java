@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SStructure;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +32,6 @@ import org.junit.Test;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperModuleTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterMapper;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterProperties;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 
 public class PTBImporterMapperTest{
 
@@ -48,12 +49,12 @@ public class PTBImporterMapperTest{
 	public void setUp(){		
 		setFixture(new PTBImporterMapper());
 		PTBImporterProperties myProps = new PTBImporterProperties();
-		getFixture().setSDocument(SaltFactory.eINSTANCE.createSDocument());
+		getFixture().setDocument(SaltFactory.createSDocument());
 		getFixture().setProperties(myProps);
 	}
 	
 	/**
-	 * Test for the standard PTB dialect with edge labels, 
+	 * Test for the standard PTB dialect with relation labels, 
 	 * node labels and POS at left bracket and terminals at right bracket
 	 * @throws IOException 
 	 */
@@ -99,23 +100,23 @@ public class PTBImporterMapperTest{
 		
 		getFixture().mapSDocument();
 		//Salt2DOT salt2dot= new Salt2DOT();
-		//salt2dot.salt2Dot(getFixture().getSDocument().getSDocumentGraph(), URI.createFileURI("D:/dot_out.dot"));
+		//salt2dot.salt2Dot(getFixture().getDocument().getDocumentGraph(), URI.createFileURI("D:/dot_out.dot"));
 		
 		//Check number of texts
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getTextualDSs().size());
 		//Check text is identical
-		assertEquals("In American romance , almost nothing rates *-2 higher than what the movie men have called *T*-1 `` * meeting cute '' ", getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("In American romance , almost nothing rates *-2 higher than what the movie men have called *T*-1 `` * meeting cute '' ", getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
 		//Count number of tokens
-		assertEquals(22, getFixture().getSDocument().getSDocumentGraph().getSTokens().size());
+		assertEquals(22, getFixture().getDocument().getDocumentGraph().getTokens().size());
 		//Count number of nodes
-		assertEquals(23, getFixture().getSDocument().getSDocumentGraph().getSStructures().size());
+		assertEquals(23, getFixture().getDocument().getDocumentGraph().getStructures().size());
 		//Check first token is annotated as IN
-		assertEquals("IN", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0).getSAnnotation("ptb::pos").getSValue());
+		assertEquals("IN", getFixture().getDocument().getDocumentGraph().getTokens().get(0).getAnnotation("ptb::pos").getValue());
 	}
 	
 	
 	/**
-	 * Test for atis style slash dialect with no edge labels, 
+	 * Test for atis style slash dialect with no relation labels, 
 	 * node labels and terminals and POS separated by slash and not 
 	 * surrounded by brackets
 	 * @throws IOException 
@@ -127,19 +128,19 @@ public class PTBImporterMapperTest{
 		getFixture().mapSDocument();
 		
 		//Check number of texts
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getTextualDSs().size());
 		//Check text length is identical
-		assertEquals(139, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText().length());
+		assertEquals(139, getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0).getText().length());
 		//Count number of tokens
-		assertEquals(17, getFixture().getSDocument().getSDocumentGraph().getSTokens().size());
+		assertEquals(17, getFixture().getDocument().getDocumentGraph().getTokens().size());
 		//Count number of nodes
-		assertEquals(16, getFixture().getSDocument().getSDocumentGraph().getSStructures().size());
+		assertEquals(16, getFixture().getDocument().getDocumentGraph().getStructures().size());
 		//Check first token is annotated as IN
-		assertEquals("CD", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0).getSAnnotation("ptb::pos").getSValue());
+		assertEquals("CD", getFixture().getDocument().getDocumentGraph().getTokens().get(0).getAnnotation("ptb::pos").getValue());
 	}
 	
 	/**
-	 * Test for the standard PTB dialect with no edge labels, one sentence per line, 
+	 * Test for the standard PTB dialect with no relation labels, one sentence per line, 
 	 * node labels and POS at left bracket and terminals at right bracket
 	 * @throws IOException 
 	 */
@@ -150,15 +151,15 @@ public class PTBImporterMapperTest{
 		getFixture().mapSDocument();
 		
 		//Check number of texts
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getTextualDSs().size());
 		//Check text length is identical
-		assertEquals(1238, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText().length());
+		assertEquals(1238, getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0).getText().length());
 		//Count number of tokens
-		assertEquals(212, getFixture().getSDocument().getSDocumentGraph().getSTokens().size());
+		assertEquals(212, getFixture().getDocument().getDocumentGraph().getTokens().size());
 		//Count number of nodes
-		assertEquals(287, getFixture().getSDocument().getSDocumentGraph().getSStructures().size());
+		assertEquals(287, getFixture().getDocument().getDocumentGraph().getStructures().size());
 		//Check first token is annotated as IN
-		assertEquals("VVPP", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0).getSAnnotation("ptb::pos").getSValue());
+		assertEquals("VVPP", getFixture().getDocument().getDocumentGraph().getTokens().get(0).getAnnotation("ptb::pos").getValue());
 	}
 	/**
 	 * Checks that even output from Stanford parser is parsable. Stanford produces partly entire sentences in one line.
@@ -198,20 +199,20 @@ public class PTBImporterMapperTest{
 		getFixture().mapSDocument();
 		
 		//Check number of texts
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getTextualDSs().size());
 		//Check text is identical
-		assertEquals("their development China 's sustainable development ", getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("their development China 's sustainable development ", getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
 		//Count number of tokens
-		assertEquals(6, getFixture().getSDocument().getSDocumentGraph().getSTokens().size());
+		assertEquals(6, getFixture().getDocument().getDocumentGraph().getTokens().size());
 		//Count number of nodes
-		assertEquals(4, getFixture().getSDocument().getSDocumentGraph().getSStructures().size());
+		assertEquals(4, getFixture().getDocument().getDocumentGraph().getStructures().size());
 		//Check first token is annotated as IN
-		assertEquals("PRP$", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0).getSAnnotation("ptb::pos").getSValue());
-		assertEquals("NN", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1).getSAnnotation("ptb::pos").getSValue());
-		assertEquals("NNP", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2).getSAnnotation("ptb::pos").getSValue());
-		assertEquals("POS", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3).getSAnnotation("ptb::pos").getSValue());
-		assertEquals("JJ", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4).getSAnnotation("ptb::pos").getSValue());
-		assertEquals("NN", getFixture().getSDocument().getSDocumentGraph().getSTokens().get(5).getSAnnotation("ptb::pos").getSValue());
+		assertEquals("PRP$", getFixture().getDocument().getDocumentGraph().getTokens().get(0).getAnnotation("ptb::pos").getValue());
+		assertEquals("NN", getFixture().getDocument().getDocumentGraph().getTokens().get(1).getAnnotation("ptb::pos").getValue());
+		assertEquals("NNP", getFixture().getDocument().getDocumentGraph().getTokens().get(2).getAnnotation("ptb::pos").getValue());
+		assertEquals("POS", getFixture().getDocument().getDocumentGraph().getTokens().get(3).getAnnotation("ptb::pos").getValue());
+		assertEquals("JJ", getFixture().getDocument().getDocumentGraph().getTokens().get(4).getAnnotation("ptb::pos").getValue());
+		assertEquals("NN", getFixture().getDocument().getDocumentGraph().getTokens().get(5).getAnnotation("ptb::pos").getValue());
 		
 
 	}

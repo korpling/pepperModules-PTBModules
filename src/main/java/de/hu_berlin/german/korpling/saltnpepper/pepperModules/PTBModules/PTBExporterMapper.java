@@ -21,18 +21,19 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.corpus_tools.salt.common.SDominanceRelation;
+import org.corpus_tools.salt.common.SToken;
+import org.corpus_tools.salt.core.GraphTraverseHandler;
+import org.corpus_tools.salt.core.SGraph.GRAPH_TRAVERSE_TYPE;
+import org.corpus_tools.salt.core.SLayer;
+import org.corpus_tools.salt.core.SNode;
+import org.corpus_tools.salt.core.SRelation;
+
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.GRAPH_TRAVERSE_TYPE;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SGraphTraverseHandler;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
-public class PTBExporterMapper extends PepperMapperImpl implements SGraphTraverseHandler {
+public class PTBExporterMapper extends PepperMapperImpl implements GraphTraverseHandler {
 
 	public StringBuilder stbOutput = new StringBuilder();
 
@@ -40,9 +41,9 @@ public class PTBExporterMapper extends PepperMapperImpl implements SGraphTravers
 	private String strNamespace;
 	private String strPosName;
 	private String strCatName;
-	private String strEdgeAnnoSeparator;
-	private String strEdgeAnnoName;
-	private Boolean bolEdgeAnnos;
+	private String strRelationAnnoSeparator;
+	private String strRelationAnnoName;
+	private Boolean bolRelationAnnos;
 	private Boolean bolHandleSlashTokens;
 
 	/**
@@ -52,12 +53,12 @@ public class PTBExporterMapper extends PepperMapperImpl implements SGraphTravers
 	@Override
 	public DOCUMENT_STATUS mapSDocument() {
 
-		if (getSDocument() != null && getSDocument().getSDocumentGraph() != null) {
+		if (getDocument() != null && getDocument().getDocumentGraph() != null) {
 			// initializes setting variables (see above)
 			getSettings();
 			// traverses the document-structure (this is a call back and will
 			// invoke #checkConstraint, #nodeReached and #nodeLeft())
-			getSDocument().getSDocumentGraph().traverse(getSDocument().getSDocumentGraph().getSRoots(), GRAPH_TRAVERSE_TYPE.TOP_DOWN_DEPTH_FIRST, "TraverseTrees", this);
+			getDocument().getDocumentGraph().traverse(getDocument().getDocumentGraph().getRoots(), GRAPH_TRAVERSE_TYPE.TOP_DOWN_DEPTH_FIRST, "TraverseTrees", this);
 			
 			File outputFile = null;
 			if (getResourceURI().toFileString()!= null){
@@ -109,10 +110,10 @@ public class PTBExporterMapper extends PepperMapperImpl implements SGraphTravers
 		// if this node is a root or it has an incoming dominance relationship
 		{
 			if (strNamespace != null && !strNamespace.isEmpty()) {
-				for (SLayer sLayer : nodCurrentNode.getSLayers()) {
+				for (SLayer sLayer : nodCurrentNode.getLayers()) {
 					// iterate through layers of this node to find user defined
 					// namespace setting
-					if (sLayer.getSName().equals(strNamespace)) {
+					if (sLayer.getName().equals(strNamespace)) {
 						bolFoundNamespace = true; // found matching namespace,
 													// done searching layers
 						break;
@@ -150,10 +151,10 @@ public class PTBExporterMapper extends PepperMapperImpl implements SGraphTravers
 		String strTokenOut;
 		// this is a token
 		if (nodCurrentNode instanceof SToken) {
-			strTokenOut = ((SToken) nodCurrentNode).getSDocumentGraph().getSText(nodCurrentNode);
+			strTokenOut = ((SToken) nodCurrentNode).getGraph().getText(nodCurrentNode);
 			// there is a pos tag
-			if (nodCurrentNode.getSAnnotation(strPosName) != null) {
-				strAnnoOut = nodCurrentNode.getSAnnotation(strPosName).getSValueSTEXT();
+			if (nodCurrentNode.getAnnotation(strPosName) != null) {
+				strAnnoOut = nodCurrentNode.getAnnotation(strPosName).getValue_STEXT();
 
 				if (bolHandleSlashTokens == false) {
 					// normal style pos notation
@@ -165,14 +166,14 @@ public class PTBExporterMapper extends PepperMapperImpl implements SGraphTravers
 			} else {
 				stbOutput.append("( " + strTokenOut + " )");
 			}
-		} else if (nodCurrentNode.getSAnnotation(strCatName) != null) {
+		} else if (nodCurrentNode.getAnnotation(strCatName) != null) {
 			// This node has a cat annotation
-			strAnnoOut = nodCurrentNode.getSAnnotation(strCatName).getSValueSTEXT();
-			if (bolEdgeAnnos == true) {
-				// output edge annotations if available
-				if (relCurrentRelation.getSAnnotation(strEdgeAnnoName) != null) {
-					// edge annotation found
-					strAnnoOut += strEdgeAnnoSeparator + relCurrentRelation.getSAnnotation(strEdgeAnnoName).getSValueSTEXT();
+			strAnnoOut = nodCurrentNode.getAnnotation(strCatName).getValue_STEXT();
+			if (bolRelationAnnos == true) {
+				// output relation annotations if available
+				if (relCurrentRelation.getAnnotation(strRelationAnnoName) != null) {
+					// relation annotation found
+					strAnnoOut += strRelationAnnoSeparator + relCurrentRelation.getAnnotation(strRelationAnnoName).getValue_STEXT();
 				}
 			}
 			stbOutput.append(" (" + strAnnoOut);
@@ -186,9 +187,9 @@ public class PTBExporterMapper extends PepperMapperImpl implements SGraphTravers
 		strNamespace = ((PTBExporterProperties) this.getProperties()).getNodeNamespace();
 		strPosName = ((PTBExporterProperties) this.getProperties()).getPosName();
 		strCatName = ((PTBExporterProperties) this.getProperties()).getCatName();
-		strEdgeAnnoSeparator = ((PTBExporterProperties) this.getProperties()).getEdgeAnnoSeparator();
-		strEdgeAnnoName = ((PTBExporterProperties) this.getProperties()).getEdgeAnnoName();
-		bolEdgeAnnos = ((PTBExporterProperties) this.getProperties()).getImportEdgeAnnos();
+		strRelationAnnoSeparator = ((PTBExporterProperties) this.getProperties()).getRelationAnnoSeparator();
+		strRelationAnnoName = ((PTBExporterProperties) this.getProperties()).getRelationAnnoName();
+		bolRelationAnnos = ((PTBExporterProperties) this.getProperties()).getImportRelationAnnos();
 		bolHandleSlashTokens = ((PTBExporterProperties) this.getProperties()).getHandleSlashTokens();
 	}
 }

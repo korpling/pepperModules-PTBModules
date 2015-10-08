@@ -17,6 +17,9 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
 
+import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
@@ -26,9 +29,7 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleNotReadyException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperExporterImpl;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
+
 
 /**
  * This exporter transforms a Salt model into the Penn Trebank format (ptb).
@@ -58,7 +59,7 @@ public class PTBExporter extends PepperExporterImpl implements PepperExporter {
 		setDesc("This exporter transforms a Salt model into the Penn Trebank format (ptb). ");
 		this.addSupportedFormat("PTB", "1.0", null);
 		this.setProperties(new PTBExporterProperties());
-		setSDocumentEnding("ptb");
+		setDocumentEnding("ptb");
 		setExportMode(EXPORT_MODE.DOCUMENTS_IN_FILES);
 	}
 
@@ -67,7 +68,7 @@ public class PTBExporter extends PepperExporterImpl implements PepperExporter {
 	 * 
 	 * This method creates a customized {@link PepperMapper} object and returns
 	 * it. You can here do some additional initialisations. Things like setting
-	 * the {@link SElementId} of the {@link SDocument} or {@link SCorpus} object
+	 * the {@link Identifier} of the {@link SDocument} or {@link SCorpus} object
 	 * and the {@link URI} resource is done by the framework (or more in detail
 	 * in method {@link #start()}). The parameter <code>sElementId</code>, if a
 	 * {@link PepperMapper} object should be created in case of the object to
@@ -75,15 +76,15 @@ public class PTBExporter extends PepperExporterImpl implements PepperExporter {
 	 * the mapper should be initialized differently. <br/>
 	 * 
 	 * @param sElementId
-	 *            {@link SElementId} of the {@link SCorpus} or {@link SDocument}
+	 *            {@link Identifier} of the {@link SCorpus} or {@link SDocument}
 	 *            to be processed.
 	 * @return {@link PepperMapper} object to do the mapping task for object
-	 *         connected to given {@link SElementId}
+	 *         connected to given {@link Identifier}
 	 */
-	public PepperMapper createPepperMapper(SElementId sElementId) {
+	public PepperMapper createPepperMapper(Identifier sElementId) {
 		PTBExporterMapper ptbmap = new PTBExporterMapper();
-		if (sElementId.getSIdentifiableElement() instanceof SDocument) {
-			ptbmap.setResourceURI(getSElementId2ResourceTable().get(sElementId));
+		if (sElementId.getIdentifiableElement() instanceof SDocument) {
+			ptbmap.setResourceURI(getIdentifier2ResourceTable().get(sElementId));
 		}
 		return (ptbmap);
 	}

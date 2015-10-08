@@ -17,6 +17,9 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.ptbModules.tests;
 
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.samples.SampleGenerator;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,16 +28,13 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.common.CorpusDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperExporterTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBExporter;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.samples.SampleGenerator;
 
 public class PTBExporterTest extends PepperExporterTest {
 
 	@Before
 	public void setUp(){		
 		setFixture(new PTBExporter());
-		getFixture().setSaltProject(SaltFactory.eINSTANCE.createSaltProject());
+		getFixture().setSaltProject(SaltFactory.createSaltProject());
 		//set formats to support
 		FormatDesc formatDef= new FormatDesc();
 		formatDef.setFormatName("PTB");
@@ -45,9 +45,9 @@ public class PTBExporterTest extends PepperExporterTest {
 	@Test
 	public void testExportPureSyntax() {
 		//SampleGenerator.createCorpusStructure(getFixture().getSaltProject());
-		getFixture().getSaltProject().getSCorpusGraphs().add(SaltFactory.eINSTANCE.createSCorpusGraph());
-		SDocument docMyDocument = getFixture().getSaltProject().getSCorpusGraphs().get(0).createSDocument(URI.createURI("mycorpus/doc1"));
-		docMyDocument.setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
+		getFixture().getSaltProject().addCorpusGraph(SaltFactory.createSCorpusGraph());
+		SDocument docMyDocument = getFixture().getSaltProject().getCorpusGraphs().get(0).createDocument(URI.createURI("mycorpus/doc1"));
+		docMyDocument.setDocumentGraph(SaltFactory.createSDocumentGraph());
 		SampleGenerator.createPrimaryData(docMyDocument);
 		SampleGenerator.createTokens(docMyDocument);
 		SampleGenerator.createSyntaxStructure(docMyDocument);

@@ -28,30 +28,30 @@ import java.io.LineNumberReader;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SDominanceRelation;
+import org.corpus_tools.salt.common.SStructure;
+import org.corpus_tools.salt.common.SStructuredNode;
+import org.corpus_tools.salt.common.STextualDS;
+import org.corpus_tools.salt.common.SToken;
+import org.corpus_tools.salt.core.SAnnotation;
+import org.corpus_tools.salt.core.SLayer;
+import org.corpus_tools.salt.core.SNode;
+
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 
 public class PTBImporterMapper extends PepperMapperImpl {
 	// manage settings
 	private String strNamespace;
 	private String strPosName;
 	private String strCatName;
-	private String strEdgeType;
-	private String strEdgeAnnoSeparator;
-	private String strEdgeAnnoNameSpace;
-	private String strEdgeAnnoName;
-	private Boolean bolEdgeAnnos;
+	private String strRelationType;
+	private String strRelationAnnoSeparator;
+	private String strRelationAnnoNameSpace;
+	private String strRelationAnnoName;
+	private Boolean bolRelationAnnos;
 	private Boolean bolHandleSlashTokens;
 
 	// Declare Salt Objects
@@ -90,7 +90,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 		// returns the resource in case of module is an importer or exporter
 		getResourceURI();
 		// returns the SDocument object to be manipulated
-		getSDocument();
+		getDocument();
 		// returns that process was successful
 		return (DOCUMENT_STATUS.COMPLETED);
 	}
@@ -102,16 +102,16 @@ public class PTBImporterMapper extends PepperMapperImpl {
 	@Override
 	public DOCUMENT_STATUS mapSDocument() {
 		getSettings();
-		if (getSDocument().getSDocumentGraph() == null) {
-			getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
+		if (getDocument().getDocumentGraph() == null) {
+			getDocument().setDocumentGraph(SaltFactory.createSDocumentGraph());
 		}
 		
 		// create SLayer and add it to SDocumentGraph
-		lyrPTB = SaltFactory.eINSTANCE.createSLayer();
-		lyrPTB.setSName(strNamespace);
-		getSDocument().getSDocumentGraph().addSLayer(lyrPTB);
+		lyrPTB = SaltFactory.createSLayer();
+		lyrPTB.setName(strNamespace);
+		getDocument().getDocumentGraph().addLayer(lyrPTB);
 		
-		txtText = getSDocument().getSDocumentGraph().createSTextualDS("");
+		txtText = getDocument().getDocumentGraph().createTextualDS("");
 
 		LineNumberReader lnr = null;
 		try {
@@ -209,7 +209,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 				throw new PepperModuleException("Cannot close the stream for input file " + getResourceURI().toFileString(), e);
 			}
 		}
-		txtText.setSText(stbText.toString());
+		txtText.setText(stbText.toString());
 
 		return (DOCUMENT_STATUS.COMPLETED);
 	}
@@ -251,10 +251,10 @@ public class PTBImporterMapper extends PepperMapperImpl {
 					intTokEndChar = stbText.toString().length() - 1;
 
 					// create SToken node covering the strTok position
-					SToken tokCurrentToken = getSDocument().getSDocumentGraph().createSToken(txtText, intTokStartChar, intTokEndChar);
+					SToken tokCurrentToken = getDocument().getDocumentGraph().createToken(txtText, intTokStartChar, intTokEndChar);
 		
 					// annotate the SToken with pos=strPos
-					tokCurrentToken.createSAnnotation(strNamespace, strPosName, strPos);
+					tokCurrentToken.createAnnotation(strNamespace, strPosName, strPos);
 					nodCurrentNode = tokCurrentToken;
 
 				} else {
@@ -262,12 +262,12 @@ public class PTBImporterMapper extends PepperMapperImpl {
 					strNode = strSingleNode.replace("(", "");
 
 					// create new SNode
-					nodCurrentNode = SaltFactory.eINSTANCE.createSStructure();
-					nodCurrentNode.getSLayers().add(lyrPTB);
-					getSDocument().getSDocumentGraph().addSNode(nodCurrentNode);
-
+					nodCurrentNode = SaltFactory.createSStructure();
+					getDocument().getDocumentGraph().addNode(nodCurrentNode);
+					nodCurrentNode.addLayer(lyrPTB);
+					
 					// annotate the new SNode with cat=strNode
-					nodCurrentNode.createSAnnotation(strNamespace, strCatName, strNode.trim());
+					nodCurrentNode.createAnnotation(strNamespace, strCatName, strNode.trim());
 				}
 
 				// put current node into a list of things to be dominated once
@@ -294,29 +294,28 @@ public class PTBImporterMapper extends PepperMapperImpl {
 
 							for (SNode nodChild : vecNodeList) {
 								if (!(nodCurrentNode instanceof SStructure)) {
-									// do not attempt to create a dominance edge
+									// do not attempt to create a dominance relation
 									// if the parent is a token
 								} else {
-									SDominanceRelation domCurrentDom = SaltFactory.eINSTANCE.createSDominanceRelation();
-									domCurrentDom.setSSource((SStructure) nodCurrentNode);
-									domCurrentDom.setSTarget(nodChild);
-									domCurrentDom.addSType(strEdgeType);
-									domCurrentDom.getLayers().add(lyrPTB);
+									SDominanceRelation domCurrentDom = SaltFactory.createSDominanceRelation();
+									domCurrentDom.setSource((SStructure) nodCurrentNode);
+									domCurrentDom.setTarget((SStructuredNode) nodChild);
+									domCurrentDom.setType(strRelationType);
+									domCurrentDom.addLayer(lyrPTB);
 
-									getSDocument().getSDocumentGraph().addSRelation(domCurrentDom);
+									getDocument().getDocumentGraph().addRelation(domCurrentDom);
 
-									// add edge annotations if desired and
+									// add relation annotations if desired and
 									// present
-									if (bolEdgeAnnos) {
-
-										anoTemp = nodChild.getSAnnotations().get(0);
-										strTempAnno = anoTemp.getSValueSTEXT().toString();
-										if (strTempAnno.contains(strEdgeAnnoSeparator)) {
-											if (!(strTempAnno.startsWith(strEdgeAnnoSeparator)) && !(strTempAnno.indexOf(strEdgeAnnoSeparator) == strTempAnno.length())) {
-												strSplitCompoundAnno[0] = strTempAnno.substring(0, strTempAnno.indexOf(strEdgeAnnoSeparator));
-												strSplitCompoundAnno[1] = strTempAnno.substring(strTempAnno.indexOf(strEdgeAnnoSeparator) + 1);
-												anoTemp.setSValue(strSplitCompoundAnno[0]);
-												domCurrentDom.createSAnnotation(strEdgeAnnoNameSpace, strEdgeAnnoName, strSplitCompoundAnno[1]);
+									if (bolRelationAnnos) {
+										anoTemp = nodChild.getAnnotations().iterator().next();
+										strTempAnno = anoTemp.getValue_STEXT().toString();
+										if (strTempAnno.contains(strRelationAnnoSeparator)) {
+											if (!(strTempAnno.startsWith(strRelationAnnoSeparator)) && !(strTempAnno.indexOf(strRelationAnnoSeparator) == strTempAnno.length())) {
+												strSplitCompoundAnno[0] = strTempAnno.substring(0, strTempAnno.indexOf(strRelationAnnoSeparator));
+												strSplitCompoundAnno[1] = strTempAnno.substring(strTempAnno.indexOf(strRelationAnnoSeparator) + 1);
+												anoTemp.setValue(strSplitCompoundAnno[0]);
+												domCurrentDom.createAnnotation(strRelationAnnoNameSpace, strRelationAnnoName, strSplitCompoundAnno[1]);
 											}
 										}
 									}
@@ -352,11 +351,11 @@ public class PTBImporterMapper extends PepperMapperImpl {
 		strNamespace = ((PTBImporterProperties) this.getProperties()).getNodeNamespace();
 		strPosName = ((PTBImporterProperties) this.getProperties()).getPosName();
 		strCatName = ((PTBImporterProperties) this.getProperties()).getCatName();
-		strEdgeType = ((PTBImporterProperties) this.getProperties()).getEdgeType();
-		strEdgeAnnoSeparator = ((PTBImporterProperties) this.getProperties()).getEdgeAnnoSeparator();
-		strEdgeAnnoNameSpace = ((PTBImporterProperties) this.getProperties()).getEdgeAnnoNamespace();
-		strEdgeAnnoName = ((PTBImporterProperties) this.getProperties()).getEdgeAnnoName();
-		bolEdgeAnnos = ((PTBImporterProperties) this.getProperties()).getImportEdgeAnnos();
+		strRelationType = ((PTBImporterProperties) this.getProperties()).getRelationType();
+		strRelationAnnoSeparator = ((PTBImporterProperties) this.getProperties()).getRelationAnnoSeparator();
+		strRelationAnnoNameSpace = ((PTBImporterProperties) this.getProperties()).getRelationAnnoNamespace();
+		strRelationAnnoName = ((PTBImporterProperties) this.getProperties()).getRelationAnnoName();
+		bolRelationAnnos = ((PTBImporterProperties) this.getProperties()).getImportRelationAnnos();
 		bolHandleSlashTokens = ((PTBImporterProperties) this.getProperties()).getHandleSlashTokens();
 	}
 
