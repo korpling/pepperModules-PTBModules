@@ -24,7 +24,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.corpus_tools.salt.SaltFactory;
-import org.corpus_tools.salt.common.SStructure;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
