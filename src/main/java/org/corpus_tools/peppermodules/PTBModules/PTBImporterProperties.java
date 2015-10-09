@@ -15,10 +15,10 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
+package org.corpus_tools.peppermodules.PTBModules;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
+import org.corpus_tools.pepper.modules.PepperModuleProperties;
+import org.corpus_tools.pepper.modules.PepperModuleProperty;
 
 public class PTBImporterProperties extends PepperModuleProperties {
 	/**

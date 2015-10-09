@@ -15,30 +15,26 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
+package org.corpus_tools.peppermodules.PTBModules;
 
+import org.corpus_tools.pepper.impl.PepperImporterImpl;
+import org.corpus_tools.pepper.modules.PepperImporter;
+import org.corpus_tools.pepper.modules.PepperMapper;
 import org.corpus_tools.salt.common.SCorpus;
 import org.corpus_tools.salt.common.SDocument;
 import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperExporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleNotReadyException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperExporterImpl;
-
 /**
- * This exporter transforms a Salt model into the Penn Trebank format (ptb).
+ * This importer transforms data in Penn Trebank format (ptb). to a Salt model
  * 
  * @author Amir Zeldes
  * @version 1.0
  * 
  */
-@Component(name = "PTBExporterComponent", factory = "PepperExporterComponentFactory")
-public class PTBExporter extends PepperExporterImpl implements PepperExporter {
+@Component(name = "PTBImporterComponent", factory = "PepperImporterComponentFactory")
+public class PTBImporter extends PepperImporterImpl implements PepperImporter {
 
 	// =================================================== mandatory
 	// ===================================================
@@ -50,16 +46,17 @@ public class PTBExporter extends PepperExporterImpl implements PepperExporter {
 	 * supported formats) are a kind of a fingerprint, which should make your
 	 * module unique.
 	 */
-	public PTBExporter() {
+	public PTBImporter() {
 		super();
-		this.setName("PTBExporter");
+		this.setName("PTBImporter");
 		setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
 		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-PTBModules"));
-		setDesc("This exporter transforms a Salt model into the Penn Trebank format (ptb). ");
+		setDesc("This importer transforms data in Penn Trebank format (ptb). to a Salt model");
 		this.addSupportedFormat("PTB", "1.0", null);
-		this.setProperties(new PTBExporterProperties());
-		setDocumentEnding("ptb");
-		setExportMode(EXPORT_MODE.DOCUMENTS_IN_FILES);
+		this.getDocumentEndings().add("ptb");
+		this.getDocumentEndings().add("txt");
+		this.getDocumentEndings().add("mrg");
+		this.setProperties(new PTBImporterProperties());
 	}
 
 	/**
@@ -81,30 +78,7 @@ public class PTBExporter extends PepperExporterImpl implements PepperExporter {
 	 *         connected to given {@link Identifier}
 	 */
 	public PepperMapper createPepperMapper(Identifier sElementId) {
-		PTBExporterMapper ptbmap = new PTBExporterMapper();
-		if (sElementId.getIdentifiableElement() instanceof SDocument) {
-			ptbmap.setResourceURI(getIdentifier2ResourceTable().get(sElementId));
-		}
+		PepperMapper ptbmap = new PTBImporterMapper();
 		return (ptbmap);
-	}
-
-	// =================================================== optional
-	// ===================================================
-	/**
-	 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong>
-	 * 
-	 * This method is called by the pepper framework after initializing this
-	 * object and directly before start processing. Initializing means setting
-	 * properties {@link PepperModuleProperties}, setting temprorary files,
-	 * resources etc. . returns false or throws an exception in case of
-	 * {@link PepperModule} instance is not ready for any reason.
-	 * 
-	 * @return false, {@link PepperModule} instance is not ready for any reason,
-	 *         true, else.
-	 */
-	@Override
-	public boolean isReadyToStart() throws PepperModuleNotReadyException {
-		// TODO make some initializations if necessary
-		return (super.isReadyToStart());
 	}
 }

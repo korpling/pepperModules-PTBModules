@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.ptbModules.tests;
+package org.corpus_tools.peppermodules.ptbModules.tests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,14 +23,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.corpus_tools.pepper.testFramework.PepperModuleTest;
+import org.corpus_tools.peppermodules.PTBModules.PTBImporterMapper;
+import org.corpus_tools.peppermodules.PTBModules.PTBImporterProperties;
 import org.corpus_tools.salt.SaltFactory;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperModuleTest;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporterProperties;
 
 public class PTBImporterMapperTest {
 

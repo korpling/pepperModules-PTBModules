@@ -15,19 +15,18 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.ptbModules.tests;
+package org.corpus_tools.peppermodules.ptbModules.tests;
 
+import org.corpus_tools.pepper.common.CorpusDesc;
+import org.corpus_tools.pepper.common.FormatDesc;
+import org.corpus_tools.pepper.testFramework.PepperExporterTest;
+import org.corpus_tools.peppermodules.PTBModules.PTBExporter;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocument;
 import org.corpus_tools.salt.samples.SampleGenerator;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.CorpusDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperExporterTest;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBExporter;
 
 public class PTBExporterTest extends PepperExporterTest {
 
