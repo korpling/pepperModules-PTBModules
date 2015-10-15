@@ -15,22 +15,21 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.ptbModules.tests;
+package org.corpus_tools.peppermodules.ptbModules.tests;
 
+import org.corpus_tools.pepper.common.FormatDesc;
+import org.corpus_tools.pepper.testFramework.PepperImporterTest;
+import org.corpus_tools.peppermodules.PTBModules.PTBImporter;
+import org.corpus_tools.salt.SaltFactory;
 import org.junit.Before;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperImporterTest;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBImporter;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-
-public class PTBImporterTest extends PepperImporterTest{
+public class PTBImporterTest extends PepperImporterTest {
 	@Before
-	public void setUp() {		
+	public void setUp() {
 		setFixture(new PTBImporter());
-		getFixture().setSaltProject(SaltFactory.eINSTANCE.createSaltProject());
-		//set formats to support
-		FormatDesc formatDef= new FormatDesc();
+		getFixture().setSaltProject(SaltFactory.createSaltProject());
+		// set formats to support
+		FormatDesc formatDef = new FormatDesc();
 		formatDef.setFormatName("PTB");
 		formatDef.setFormatVersion("1.0");
 		this.supportedFormatsCheck.add(formatDef);

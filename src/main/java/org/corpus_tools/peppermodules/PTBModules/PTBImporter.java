@@ -15,17 +15,16 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules;
+package org.corpus_tools.peppermodules.PTBModules;
 
+import org.corpus_tools.pepper.impl.PepperImporterImpl;
+import org.corpus_tools.pepper.modules.PepperImporter;
+import org.corpus_tools.pepper.modules.PepperMapper;
+import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperImporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperImporterImpl;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 /**
  * This importer transforms data in Penn Trebank format (ptb). to a Salt model
@@ -54,9 +53,9 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter {
 		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-PTBModules"));
 		setDesc("This importer transforms data in Penn Trebank format (ptb). to a Salt model");
 		this.addSupportedFormat("PTB", "1.0", null);
-		this.getSDocumentEndings().add("ptb");
-		this.getSDocumentEndings().add("txt");
-		this.getSDocumentEndings().add("mrg");
+		this.getDocumentEndings().add("ptb");
+		this.getDocumentEndings().add("txt");
+		this.getDocumentEndings().add("mrg");
 		this.setProperties(new PTBImporterProperties());
 	}
 
@@ -65,7 +64,7 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter {
 	 * 
 	 * This method creates a customized {@link PepperMapper} object and returns
 	 * it. You can here do some additional initialisations. Things like setting
-	 * the {@link SElementId} of the {@link SDocument} or {@link SCorpus} object
+	 * the {@link Identifier} of the {@link SDocument} or {@link SCorpus} object
 	 * and the {@link URI} resource is done by the framework (or more in detail
 	 * in method {@link #start()}). The parameter <code>sElementId</code>, if a
 	 * {@link PepperMapper} object should be created in case of the object to
@@ -73,12 +72,12 @@ public class PTBImporter extends PepperImporterImpl implements PepperImporter {
 	 * the mapper should be initialized differently. <br/>
 	 * 
 	 * @param sElementId
-	 *            {@link SElementId} of the {@link SCorpus} or {@link SDocument}
+	 *            {@link Identifier} of the {@link SCorpus} or {@link SDocument}
 	 *            to be processed.
 	 * @return {@link PepperMapper} object to do the mapping task for object
-	 *         connected to given {@link SElementId}
+	 *         connected to given {@link Identifier}
 	 */
-	public PepperMapper createPepperMapper(SElementId sElementId) {
+	public PepperMapper createPepperMapper(Identifier sElementId) {
 		PepperMapper ptbmap = new PTBImporterMapper();
 		return (ptbmap);
 	}

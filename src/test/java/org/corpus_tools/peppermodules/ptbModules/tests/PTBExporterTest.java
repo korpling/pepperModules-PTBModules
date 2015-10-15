@@ -15,44 +15,43 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.ptbModules.tests;
+package org.corpus_tools.peppermodules.ptbModules.tests;
 
+import org.corpus_tools.pepper.common.CorpusDesc;
+import org.corpus_tools.pepper.common.FormatDesc;
+import org.corpus_tools.pepper.testFramework.PepperExporterTest;
+import org.corpus_tools.peppermodules.PTBModules.PTBExporter;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.samples.SampleGenerator;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.CorpusDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperExporterTest;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.PTBModules.PTBExporter;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.samples.SampleGenerator;
-
 public class PTBExporterTest extends PepperExporterTest {
 
 	@Before
-	public void setUp(){		
+	public void setUp() {
 		setFixture(new PTBExporter());
-		getFixture().setSaltProject(SaltFactory.eINSTANCE.createSaltProject());
-		//set formats to support
-		FormatDesc formatDef= new FormatDesc();
+		getFixture().setSaltProject(SaltFactory.createSaltProject());
+		// set formats to support
+		FormatDesc formatDef = new FormatDesc();
 		formatDef.setFormatName("PTB");
 		formatDef.setFormatVersion("1.0");
 		this.supportedFormatsCheck.add(formatDef);
 	}
-	
+
 	@Test
 	public void testExportPureSyntax() {
-		//SampleGenerator.createCorpusStructure(getFixture().getSaltProject());
-		getFixture().getSaltProject().getSCorpusGraphs().add(SaltFactory.eINSTANCE.createSCorpusGraph());
-		SDocument docMyDocument = getFixture().getSaltProject().getSCorpusGraphs().get(0).createSDocument(URI.createURI("mycorpus/doc1"));
-		docMyDocument.setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
+		// SampleGenerator.createCorpusStructure(getFixture().getSaltProject());
+		getFixture().getSaltProject().addCorpusGraph(SaltFactory.createSCorpusGraph());
+		SDocument docMyDocument = getFixture().getSaltProject().getCorpusGraphs().get(0).createDocument(URI.createURI("mycorpus/doc1"));
+		docMyDocument.setDocumentGraph(SaltFactory.createSDocumentGraph());
 		SampleGenerator.createPrimaryData(docMyDocument);
 		SampleGenerator.createTokens(docMyDocument);
 		SampleGenerator.createSyntaxStructure(docMyDocument);
 		SampleGenerator.createSyntaxAnnotations(docMyDocument);
-		CorpusDesc corpusDesc= new CorpusDesc();
+		CorpusDesc corpusDesc = new CorpusDesc();
 		corpusDesc.setCorpusPath(URI.createURI(getTempPath("ptbTest").toString()));
 		getFixture().setCorpusDesc(corpusDesc);
 		this.start();
