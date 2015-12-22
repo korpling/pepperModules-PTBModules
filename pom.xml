@@ -4,33 +4,19 @@
 	<parent>
 		<groupId>org.corpus-tools</groupId>
 		<artifactId>pepper-parentModule</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>3.0.0</version>
 	</parent>
 	<artifactId>pepperModules-PTBModules</artifactId>
 	<name>${project.groupId}.${project.artifactId}</name>
 	<version>1.0.6-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<distributionManagement>
-		<repository>
-			<id>korpling</id>
-			<name>korpling maven repo</name>
-			<url>file:///srv/www/maven2/</url>
-		</repository>
-	</distributionManagement>
+	<url>https://github.com/korpling/pepperModules-PTBModules</url>
 	<scm>
 		<connection>scm:git:git://github.com/korpling/pepperModules-PTBModules.git</connection>
 		<developerConnection>scm:git:git@github.com:korpling/pepperModules-PTBModules.git</developerConnection>
 		<url>https://github.com/korpling/pepperModules-PTBModules</url>
 	</scm>
-	<repositories>
-		<repository>
-			<id>korpling</id>
-			<name>korpling maven repo</name>
-			<url>http://korpling.german.hu-berlin.de/maven2</url>
-		</repository>
-	</repositories>
 	<description>This project provides a module to import the Penn Treebank (PTB) bracket format.</description>
-	<url>https://korpling.german.hu-berlin.de/p/projects/peppermodules-ptbmodules</url>
 	<ciManagement>
 		<system>Jenkins</system>
 		<url>https://korpling.german.hu-berlin.de/jenkins/</url>
@@ -39,29 +25,6 @@
 	<organization>
 		<name>Humboldt-Universität zu Berlin</name>
 	</organization>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>${maven-release-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>default</id>
-						<goals>
-							<goal>perform</goal>
-						</goals>
-						<configuration>
-							<pomFileName>pepperModules-PTBModules/pom.xml</pomFileName>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration>
-					<releaseProfiles>release</releaseProfiles>
-					<goals>package assembly:single deploy</goals>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<issueManagement>
 		<system>GitHub</system>
 		<url>https://github.com/korpling/pepperModules-PTBModules/issues</url>
