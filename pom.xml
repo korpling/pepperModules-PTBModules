@@ -7,14 +7,14 @@
 	</parent>
 	<artifactId>pepperModules-PTBModules</artifactId>
 	<name>${project.groupId}.${project.artifactId}</name>
-	<version>1.0.6</version>
+	<version>1.0.7-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<url>https://github.com/korpling/pepperModules-PTBModules</url>
 	<scm>
 		<connection>scm:git:git://github.com/korpling/pepperModules-PTBModules.git</connection>
 		<developerConnection>scm:git:git@github.com:korpling/pepperModules-PTBModules.git</developerConnection>
 		<url>https://github.com/korpling/pepperModules-PTBModules</url>
-	  <tag>pepperModules-PTBModules-1.0.6</tag>
+	  <tag>HEAD</tag>
   </scm>
 	<description>This project provides a module to import the Penn Treebank (PTB) bracket format.</description>
 	<ciManagement>
