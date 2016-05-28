@@ -264,7 +264,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 					// create new SNode
 					nodCurrentNode = SaltFactory.createSStructure();
 					getDocument().getDocumentGraph().addNode(nodCurrentNode);
-					nodCurrentNode.addLayer(lyrPTB);
+					lyrPTB.addNode(nodCurrentNode);
 
 					// annotate the new SNode with cat=strNode
 					nodCurrentNode.createAnnotation(strNamespace, strCatName, strNode.trim());
@@ -302,7 +302,7 @@ public class PTBImporterMapper extends PepperMapperImpl {
 									domCurrentDom.setSource((SStructure) nodCurrentNode);
 									domCurrentDom.setTarget((SStructuredNode) nodChild);
 									domCurrentDom.setType(strRelationType);
-									domCurrentDom.addLayer(lyrPTB);
+									lyrPTB.addRelation(domCurrentDom);
 
 									getDocument().getDocumentGraph().addRelation(domCurrentDom);
 
