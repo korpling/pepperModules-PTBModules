@@ -245,10 +245,12 @@ This PTB 'dialect' is also supported, and generation of such tokens can be switc
 
 ## Properties
 The table  contains an overview of all usable properties to customize the behaviour of this Pepper module. The following section contains a description of each property and describes the resulting differences in the mapping to the Salt model.
+
 Properties to customize exporter behaviour
+
 |         Name of property     |	Type of property |	optional/ mandatory |	default value|
-|------------------------------|------------------|----------------------|----------------|
-|ptb.Exporter.nodeNamespace    | String           |optional	            |ptb|
+|------------------------------|-------------------------|--------------------------|----------------|
+|ptb.Exporter.nodeNamespace    |        String           |optional	            |ptb|
 |ptb.Exporter.posName          |	String           |optional	            |pos|
 |ptb.Exporter.catName          |	String           |optional	            |cat|
 |ptb.Exporter.edgeType         |	String           |optional	            |edge|
