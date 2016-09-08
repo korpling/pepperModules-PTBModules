@@ -150,52 +150,51 @@ This PTB 'dialect' is also supported, and support for such tokens can be switche
 ## Properties
 The table contains an overview of all usable properties to customize the behaviour of this Pepper module. The following section contains a description of each property and describes the resulting differences in the mapping to the Salt model. 
 
-|Name of property |	Type of property |	optional/ mandatory |	default value|
-|-----------------|------------------|----------------------|----------------|
-|nodeNamespace    | String           |optional	            |ptb|
-|posName          |	String           |optional	            |pos|
-|catName          |	String           |optional	            |cat|
-|edgeType         |	String           |optional	            |edge|
-|edgeAnnoSeparator|	String           |optional	            |-|
-|edgeAnnoNamespace|	String           |optional	            |ptb|
-|edgeAnnoName     |	String           |optional	            |func|
-|nodeNamespace    |	Boolean          |optional	            |true|
-|handleSlashTokens|	Boolean          |optional	            |true|
+|    Name of property          |	Type of property |	optional/ mandatory |	default value|
+|------------------------------|------------------|----------------------|----------------|
+|ptb.importer.nodeNamespace    | String           |optional	            |ptb|
+|ptb.importer.posName          |	String           |optional	            |pos|
+|ptb.importer.catName          |	String           |optional	            |cat|
+|ptb.importer.edgeType         |	String           |optional	            |edge|
+|ptb.importer.edgeAnnoSeparator|	String           |optional	            |-|
+|ptb.importer.edgeAnnoNamespace|	String           |optional	            |ptb|
+|ptb.importer.edgeAnnoName     |	String           |optional	            |func|
+|ptb.importer.handleSlashTokens|	Boolean          |optional	            |true|
 
 ### nodeNamespace
-nodeNamespace=ptb
+ptb.importer.nodeNamespace=ptb
 Determines the name of the Salt layer assigned to tree nodes on import.
 
 ### posName
-posName=pos
+ptb.importer.posName=pos
 Name of pos annotation name for PTB tokens, e.g. 'pos'.
 
 ### catName
-catName=cat
+ptb.importer.catName=cat
 Name of category annotation for PTB non-terminal nodes, e.g. 'cat'.
 
 ### edgeType
-edgeType=edge
+ptb.importer.edgeType=edge
 Name of edge type for PTB dominance edges, e.g. 'edge'.
 
 ### edgeAnnoSeparator
-edgeAnnoSeparator=-
+ptb.importer.edgeAnnoSeparator=-
 Separator character for edge labels following node annotation, e.g. the '-' in (NP-subj (....
 
 ### edgeAnnoNamespace
-edgeAnnoNamespace=ptb
+ptb.importer.edgeAnnoNamespace=ptb
 Namespace for PTB edge annotations (represented within a node label after a separator), e.g. 'ptb'.
 
 ### edgeAnnoName
-edgeAnnoName=func
+ptb.importer.edgeAnnoName=func
 Name of PTB dominance edge annotation name, e.g. 'func'.
 
 ### nodeNamespace
-importEdgeAnnos=true
+ptb.importer.importEdgeAnnos=true
 Boolean, whether to look for edge annotations after a separator.
 
 ### handleSlashTokens
-handleSlashTokens=true
+ptb.importer.handleSlashTokens=true
 Boolean, whether to handle Penn atis-style tokens, which are non bracketed and separate the pos tag with a slash, e.g.: (NP two/CD friends/NNS ).
 
 # <a name="exporter">PTBExporter</a>
@@ -247,50 +246,49 @@ This PTB 'dialect' is also supported, and generation of such tokens can be switc
 ## Properties
 The table  contains an overview of all usable properties to customize the behaviour of this Pepper module. The following section contains a description of each property and describes the resulting differences in the mapping to the Salt model.
 Properties to customize exporter behaviour
-|Name of property |	Type of property |	optional/ mandatory |	default value|
-|-----------------|------------------|----------------------|----------------|
-|nodeNamespace    | String           |optional	            |ptb|
-|posName          |	String           |optional	            |pos|
-|catName          |	String           |optional	            |cat|
-|edgeType         |	String           |optional	            |edge|
-|edgeAnnoSeparator|	String           |optional	            |-|
-|edgeAnnoNamespace|	String           |optional	            |ptb|
-|edgeAnnoName     |	String           |optional	            |func|
-|nodeNamespace    |	Boolean          |optional	            |true|
-|handleSlashTokens|	Boolean          |optional	            |false|
+|         Name of property     |	Type of property |	optional/ mandatory |	default value|
+|------------------------------|------------------|----------------------|----------------|
+|ptb.Exporter.nodeNamespace    | String           |optional	            |ptb|
+|ptb.Exporter.posName          |	String           |optional	            |pos|
+|ptb.Exporter.catName          |	String           |optional	            |cat|
+|ptb.Exporter.edgeType         |	String           |optional	            |edge|
+|ptb.Exporter.edgeAnnoSeparator|	String           |optional	            |-|
+|ptb.Exporter.edgeAnnoNamespace|	String           |optional	            |ptb|
+|ptb.Exporter.edgeAnnoName     |	String           |optional	            |func|
+|ptb.Exporter.handleSlashTokens|	Boolean          |optional	            |false|
 
 ### nodeNamespace
-nodeNamespace=ptb
+ptb.Exporter.nodeNamespace=ptb
 Name of namespace for nodes to export and their annotations, e.g. 'ptb'. Only nodes within this layer name in Salt will be exported.
 
 ### posName
-posName=pos
+ptb.Exporter.posName=pos
 Name of pos annotation name for tokens, e.g. 'pos'. Only this annotation name will be taken to generate pos labels for the tokens.
 
 ### catName
-catName=cat
+ptb.Exporter.catName=cat
 Name of category annotation for non-terminal nodes to be exported, e.g. 'cat'. Only this annotation name will be taken to generate non-terminal node lables.
 
 ### edgeType
-edgeType=edge
+ptb.Exporter.edgeType=edge
 Name of edge type for dominance edges to be exported, e.g. 'edge'. Only this edge type will be taken to generate the PTB bracket structure.
 
 ### edgeAnnoSeparator
-edgeAnnoSeparator=-
+ptb.Exporter.edgeAnnoSeparator=-
 Separator character for edge labels following node annotation, e.g. the '-' in (NP-subj (....
 
 ### edgeAnnoNamespace
-edgeAnnoNamespace=ptb
+ptb.Exporter.edgeAnnoNamespace=ptb
 Namespace for edge annotations to be exported (represented within a node label after a separator), e.g. 'ptb'.
 
 ### edgeAnnoName
-edgeAnnoName=func
+ptb.Exporter.edgeAnnoName=func
 Name of dominance edge annotation name to be exported, e.g. 'func'.
 
 ###nodeNamespace
-exportEdgeAnnos=true
+ptb.Exporter.exportEdgeAnnos=true
 Boolean, whether to output edge annotations after a separator.
 
 ### handleSlashTokens
-handleSlashTokens=false
+ptb.Exporter.handleSlashTokens=false
 Boolean, whether to create Penn atis-style tokens, which are non bracketed and separate the pos tag with a slash, e.g.: (NP two/CD friends/NNS ).
