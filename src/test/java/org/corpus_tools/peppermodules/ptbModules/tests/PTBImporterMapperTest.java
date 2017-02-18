@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.corpus_tools.pepper.testFramework.PepperModuleTest;
+import org.corpus_tools.pepper.testFramework.helpers.PepperModuleTest;
 import org.corpus_tools.peppermodules.PTBModules.PTBImporterMapper;
 import org.corpus_tools.peppermodules.PTBModules.PTBImporterProperties;
 import org.corpus_tools.salt.SaltFactory;
